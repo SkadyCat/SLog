@@ -44,7 +44,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
 		accum = accum|(b[1] & 0xff) << 8;
 		accum = accum|(b[2] & 0xff) << 16;
 		accum = accum|(b[3] & 0xff) << 24;
-		System.out.println(accum);
+
 		return Float.intBitsToFloat(accum);
 	}
 

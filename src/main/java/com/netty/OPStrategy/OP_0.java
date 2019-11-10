@@ -15,7 +15,7 @@ public class OP_0  extends SLogStrategy{
         switch (_subCode){
 
             case 0:
-                System.out.println("有玩家进入游戏");
+               // System.out.println("有玩家进入游戏");
                 opRole = new Role(handler);
                 RoleMap.roleMapHashMap.put(handler.ID,opRole);
                 handler.context.channel().writeAndFlush(new DataModel((byte)0,(byte)0,handler.ID,new float[]{1.0f}).bytes);
@@ -23,7 +23,7 @@ public class OP_0  extends SLogStrategy{
                 break;
 
             case 2:
-                System.out.println("获取所有数据"+RoleMap.userList);
+               // System.out.println("获取所有数据"+RoleMap.userList);
 
                 RoleMap.resetAllPosition();
                 RoleMap.BroadCast(0,1,RoleMap.userList,RoleMap.posList);
@@ -33,7 +33,7 @@ public class OP_0  extends SLogStrategy{
                 //System.out.println("更新方向信息");
                 opRole = RoleMap.roleMapHashMap.get(handler.ID);
                 opRole.dir = new Vector3(data.floatList[0],data.floatList[1],data.floatList[2]);
-                System.out.println(opRole.id +">>"+opRole.dir.toString());
+                //System.out.println(opRole.id +">>"+opRole.dir.toString());
 
                 break;
             case 123:

@@ -103,7 +103,7 @@ public class NettyHandler extends ChannelInboundHandlerAdapter {
 			{
 
 
-				System.out.println("有两个以上的包！");
+				//System.out.println("有两个以上的包！");
 				 //两个以上的包
 				 for (int i =0;i<frameList.size() -1;i++){
 
