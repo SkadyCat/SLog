@@ -25,10 +25,15 @@ public class OP_0  extends SLogStrategy{
                 break;
 
             case 2:
-                System.out.println("获取所有数据"+RoleMap.userList);
+
+                if (data.strContent .equals("qbs")){
+                    System.out.println("获取所有数据"+RoleMap.userList);
+                    RoleMap.resetAllPosition();
+                    RoleMap.BroadCast(0,1,RoleMap.userList,RoleMap.posList);
+                }
+
                // System.out.println();
-                RoleMap.resetAllPosition();
-                RoleMap.BroadCast(0,1,RoleMap.userList,RoleMap.posList);
+
                 break;
             case 1:
 
