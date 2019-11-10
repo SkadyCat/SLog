@@ -30,7 +30,10 @@ public class DataModel {
         strLen[2] = bytes[4];
         strLen[3] = bytes[5];
         int va = NettyDecoder.bytesToInt(strLen,0);
+        if (va<0){
 
+            va = 0;
+        }
         byte[] floatLen = new byte[4];
         floatLen[0] = bytes[6];
         floatLen[1] = bytes[7];
@@ -42,6 +45,10 @@ public class DataModel {
 
 
         int floatNum = floatLenValue/4;
+        if (floatNum<0){
+
+            floatNum = 0;
+        }
         float[] floatArray =new float[floatNum];
         for (int i =0;i<floatNum;i++){
 
