@@ -109,6 +109,9 @@ public class DataModel {
 
     public static boolean equal(int offset,byte[] origin,byte[] aim) {
         boolean reb = true;
+
+        if (offset>origin.length -10)
+            return false;
         for (int i = 0; i < aim.length; i++) {
 
             if (aim[i] != origin[offset + i]) {
