@@ -1,0 +1,47 @@
+package com.netty.role;
+
+import com.netty.common.Vector3;
+import com.netty.server.DataModel;
+
+import java.util.HashMap;
+
+public class RoleMap {
+
+    public static String userList = "";
+    public static  float[] posList ;
+    public static HashMap<String,Role> roleMapHashMap = new HashMap<>();
+
+
+    public static void  BroadCast(int mainCode,int subCode,String sendStr,float[] fl){
+
+
+        DataModel sdModel = new DataModel((byte)mainCode,(byte)subCode,sendStr,fl);
+        for (Role rl:roleMapHashMap.values()
+             ) {
+            if (rl.handler.context.channel().isWritable() == true){
+                rl.handler.context.channel().writeAndFlush(sdModel.bytes);
+            }
+
+
+        }
+
+    }
+
+    public static void resetAllPosition(){
+
+        posList = new float[roleMapHashMap.size()*3];
+        userList = "";
+        int index = 0;
+        for (Role ro:roleMapHashMap.values()
+             ) {
+            userList += ro.id+"#";
+            posList[3*index+0] = ro.position.x;
+            posList[3*index+1] = ro.position.y;
+            posList[3*index+2] = ro.position.z;
+            index +=1;
+            ro.dir = new Vector3();
+
+        }
+    }
+
+}
