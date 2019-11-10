@@ -54,6 +54,8 @@ public class NettyHandler extends ChannelInboundHandlerAdapter {
 		//System.out.println("验证正常！");
 		return  true;
 	}
+	byte[] strLen = new byte[4];
+	byte[] floatLen = new byte[4];
 	public void  process(byte[] data){
 
 
@@ -62,7 +64,29 @@ public class NettyHandler extends ChannelInboundHandlerAdapter {
 			return;
 		}
 
-		DataModel model = new DataModel(data);
+		strLen[0] = data[2];
+		strLen[1] = data[3];
+		strLen[2] = data[4];
+		strLen[3] = data[5];
+		int va = NettyDecoder.bytesToInt(strLen,0);
+		if (va<0){
+
+			va = 0;
+		}
+		floatLen[0] = data[6];
+		floatLen[1] = data[7];
+		floatLen[2] = data[8];
+		floatLen[3] = data[9];
+		int floatLenValue = NettyDecoder.bytesToInt(floatLen,0);
+
+		if (data.length<(10+va+floatLenValue)){
+
+			System.out.println("帧验证异常10");
+
+			return;
+		}
+		//DataModel model = new DataModel(data);
+		DataModel model = new DataModel(data,va,floatLenValue);
 		if (model.modelStatus == -1)
 			return;
 		//System.out.println(model.mainCode+"<>"+model.subCode+"<>"+model.strContent+"<>"+model.getFloatStr());

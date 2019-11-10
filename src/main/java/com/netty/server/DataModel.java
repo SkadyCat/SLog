@@ -13,6 +13,45 @@ public class DataModel {
     public String strContent;
     public float[] floatList;
     public int modelStatus = 0;
+
+    public DataModel(byte[] bytes,int strLen,int floatLen){
+
+        this.bytes = bytes;
+        mainCode = bytes[0];
+        subCode = bytes[1];
+        int va = strLen;
+
+        int floatLenValue = floatLen;
+        byte[] strContent = new byte[va];
+        byte[] tempFloat = new byte[4];
+
+
+        int floatNum = floatLenValue/4;
+        if (floatNum<0){
+
+            floatNum = 0;
+        }
+        float[] floatArray =new float[floatNum];
+        for (int i =0;i<floatNum;i++){
+
+            for (int j =0;j<4;j++){
+
+                tempFloat[j] = bytes[10+va+4*i+j];
+            }
+            floatArray[i] = NettyDecoder.getFloat(tempFloat);
+        }
+
+
+        for (int i = 0;i<va;i++){
+
+            strContent[i] = bytes[10+i];
+        }
+
+        this.strContent = new String(strContent);
+        this.floatList = floatArray;
+
+
+    }
     public DataModel(byte[] bytes){
 
         if (bytes.length<10)
@@ -21,7 +60,7 @@ public class DataModel {
             return;
         }
 
-        this.bytes = bytes.clone();
+        this.bytes = bytes;
         byte[] strLen =new byte[4];
         this.mainCode = bytes[0];
         this.subCode = bytes[1];
