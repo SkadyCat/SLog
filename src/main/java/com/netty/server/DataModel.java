@@ -47,7 +47,7 @@ public class DataModel {
 
             modelStatus = -1;
             System.out.println("异常帧，不执行byte长度 =:"+bytes.length+"<字符长度 = >"+
-                    va+"float长度 = ");
+                    va+"float长度 = "+"----"+new String(bytes));
             return;
         }
 
