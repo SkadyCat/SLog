@@ -21,7 +21,7 @@ public class DataModel {
             return;
         }
 
-        this.bytes = bytes;
+        this.bytes = bytes.clone();
         byte[] strLen =new byte[4];
         this.mainCode = bytes[0];
         this.subCode = bytes[1];
