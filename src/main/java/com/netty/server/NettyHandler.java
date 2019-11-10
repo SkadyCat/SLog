@@ -51,7 +51,7 @@ public class NettyHandler extends ChannelInboundHandlerAdapter {
 			if (origin[origin.length-3+i] != lb[i])
 				return false;
 		}
-		System.out.println("验证正常！");
+		//System.out.println("验证正常！");
 		return  true;
 	}
 	public void  process(byte[] data){
