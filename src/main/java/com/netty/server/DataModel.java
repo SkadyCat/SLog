@@ -43,6 +43,12 @@ public class DataModel {
         byte[] strContent = new byte[va];
         byte[] tempFloat = new byte[4];
 
+        if (bytes.length<10+floatLenValue+va){
+
+            modelStatus = -1;
+            System.out.println("异常帧，不执行");
+            return;
+        }
 
         int floatNum = floatLenValue/4;
         if (floatNum<0){
