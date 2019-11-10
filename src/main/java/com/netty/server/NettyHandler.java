@@ -40,7 +40,26 @@ public class NettyHandler extends ChannelInboundHandlerAdapter {
 
 	}
 
+	public boolean frameHeadConfirm(byte[] origin){
+		byte[] lb = new byte[3];
+		lb[0] = (byte)11;
+		lb[1] = (byte)55;
+		lb[2] = (byte)101;
+		boolean answer = true;
+		for (int i =0;i<3;i++
+			 ) {
+			if (origin[origin.length-3+i] != lb[i])
+				return false;
+		}
+		return  true;
+	}
 	public void  process(byte[] data){
+
+
+		if (frameHeadConfirm(data) == false){
+			System.out.println("帧验证异常");
+			return;
+		}
 
 		DataModel model = new DataModel(data);
 		if (model.modelStatus == -1)
