@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class RoleMap {
 
     public static String userList = "";
-    public static  float[] posList ;
+    public static  float[] posList = new float[3];
     public static HashMap<String,Role> roleMapHashMap = new HashMap<>();
 
 
@@ -27,14 +27,31 @@ public class RoleMap {
 
     }
 
+    public static void resetuserList(){
+        userList = "";
+        System.out.println("resetUserList"+roleMapHashMap.size()*3);
+        posList = new float[roleMapHashMap.size()*3];
+        for (Role ro:roleMapHashMap.values()
+        ) {
+            userList += ro.id + "#";
+
+        }
+
+        System.out.println(userList);
+    }
     public static void resetAllPosition(){
 
-        posList = new float[roleMapHashMap.size()*3];
-        userList = "";
+
+
         int index = 0;
+        if (posList.length<roleMapHashMap.size()*3){
+
+            posList = new float[roleMapHashMap.size()*3];
+
+        }
         for (Role ro:roleMapHashMap.values()
              ) {
-            userList += ro.id+"#";
+
             posList[3*index+0] = ro.position.x;
             posList[3*index+1] = ro.position.y;
             posList[3*index+2] = ro.position.z;

@@ -19,8 +19,13 @@ public class STimer extends TimerTask {
             ro.position.add(ro.dir);
 
         }
-        RoleMap.resetAllPosition();
-        RoleMap.BroadCast(0,2,RoleMap.userList,RoleMap.posList);
+
+        if (RoleMap.roleMapHashMap.size()>0){
+
+            RoleMap.resetAllPosition();
+            RoleMap.BroadCast(0,2,RoleMap.userList,RoleMap.posList);
+
+        }
 
 
     }

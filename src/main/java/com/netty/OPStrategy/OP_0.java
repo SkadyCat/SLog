@@ -7,6 +7,7 @@ import com.netty.role.Role;
 import com.netty.role.RoleMap;
 import com.netty.server.DataModel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import jdk.nashorn.internal.runtime.Debug;
 
 public class OP_0  extends SLogStrategy{
 
@@ -18,13 +19,14 @@ public class OP_0  extends SLogStrategy{
                // System.out.println("有玩家进入游戏");
                 opRole = new Role(handler);
                 RoleMap.roleMapHashMap.put(handler.ID,opRole);
+                RoleMap.resetuserList();
                 handler.context.channel().writeAndFlush(new DataModel((byte)0,(byte)0,handler.ID,new float[]{1.0f}).bytes);
 
                 break;
 
             case 2:
-               // System.out.println("获取所有数据"+RoleMap.userList);
-
+                System.out.println("获取所有数据"+RoleMap.userList);
+               // System.out.println();
                 RoleMap.resetAllPosition();
                 RoleMap.BroadCast(0,1,RoleMap.userList,RoleMap.posList);
                 break;
