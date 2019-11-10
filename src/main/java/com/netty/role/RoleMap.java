@@ -56,7 +56,7 @@ public class RoleMap {
             posList[3*index+1] = ro.position.y;
             posList[3*index+2] = ro.position.z;
             index +=1;
-            ro.dir = new Vector3();
+            //ro.dir = new Vector3();
 
         }
     }
