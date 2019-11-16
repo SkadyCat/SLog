@@ -81,7 +81,7 @@ public class UDPHandler extends
         dataBag = datagramPacket;
         process(data);
        // context.channel().writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(cache.bytes), datagramPacket.sender()));
-        System.out.println("向客户端写入数据");
+       // System.out.println("向客户端写入数据");
     }
 
     @Override
