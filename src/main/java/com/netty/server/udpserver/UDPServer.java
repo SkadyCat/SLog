@@ -11,7 +11,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 public class UDPServer {
 
     public void run(int port) throws Exception{
-       // STimer.exacute();
+        STimer.exacute();
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         //由于我们用的是UDP协议，所以要用NioDatagramChannel来创建
@@ -23,7 +23,7 @@ public class UDPServer {
 
     public static void main(String[] args) throws Exception {
         new UDPServer().run(9001);
-
+        //STimer.EX
     }
 
 }

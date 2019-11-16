@@ -44,11 +44,11 @@ public class OP_0  extends SLogStrategy{
                 opRole = RoleMap.roleMapHashMap.get(handler.getID());
                 opRole.dir = new Vector3(data.floatList[0],data.floatList[1],data.floatList[2]);
 //                //System.out.println(opRole.id +">>"+opRole.dir.toString());
-                opRole.move(opRole.dir);
+                //opRole.move(opRole.dir);
                 //RoleMap.resetAllPosition();
                // System.out.println(opRole.position);
-                handler.send(new DataModel((byte)0,(byte)2,opRole.id,new float[]{opRole.position.x,
-                        opRole.position.y,opRole.position.z}));
+             //   handler.send(new DataModel((byte)0,(byte)2,opRole.id,new float[]{opRole.position.x,
+             //           opRole.position.y,opRole.position.z}));
                 break;
             case 123:
 //                System.out.println(data.strContent);

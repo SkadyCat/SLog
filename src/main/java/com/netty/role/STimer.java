@@ -1,7 +1,6 @@
 package com.netty.role;
 
 //import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import com.netty.server.DataModel;
 import com.netty.server.NettyHandler;
 
         import java.util.Timer;
@@ -22,15 +21,10 @@ public class STimer extends TimerTask {
         }
 
         if (RoleMap.roleMapHashMap.size()>0){
-           //System.out.println(RoleMap.getPoseList());
-           //System.out.println(RoleMap.userList);
+            //System.out.println(RoleMap.getPoseList());
             RoleMap.resetAllPosition();
-
-            for (Role rl :RoleMap.roleMapHashMap.values()){
-
-                rl.handler.send(new DataModel((byte) 0,(byte)2,"all roleMap",new float[]{1.3f,1.5f,1.7f}));
-            }
-           // RoleMap.BroadCast(0,2,RoleMap.userList,RoleMap.posList);
+            
+            RoleMap.BroadCast(0,2,RoleMap.userList,RoleMap.posList);
 
         }
 
@@ -41,7 +35,7 @@ public class STimer extends TimerTask {
 
         Timer timer = new Timer("我的定时器");           // 创建一个定时器
         STimer myTimerTask = new STimer();
-        timer.schedule(myTimerTask, 100, 200);    //10秒后执行，周期为2秒
+        timer.schedule(myTimerTask, 100, 20);    //10秒后执行，周期为2秒
         //  handler.chan
     }
 }
