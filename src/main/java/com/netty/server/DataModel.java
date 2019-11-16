@@ -16,6 +16,7 @@ public class DataModel {
 
     public DataModel(byte[] bytes,int strLen,int floatLen){
 
+        System.out.println("产生了新的数据模型！");
         this.bytes = bytes;
         mainCode = bytes[0];
         subCode = bytes[1];
@@ -54,12 +55,13 @@ public class DataModel {
     }
     public DataModel(byte[] bytes){
 
+
         if (bytes.length<10)
         {
             modelStatus = -1;
             return;
         }
-
+        //System.out.println("处理了事件！");
         this.bytes = bytes;
         byte[] strLen =new byte[4];
         this.mainCode = bytes[0];
@@ -181,13 +183,7 @@ public class DataModel {
         this.mainCode = mainCode;
         this.subCode = subCode;
 
-        byte[] nb = frameHead();
 
-        for (byte fb : nb){
-
-            tempList.add(fb);
-
-         }
         tempList.add(mainCode);
         tempList.add(subCode);
 

@@ -52,7 +52,7 @@ public class NettyServer {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void mains(String[] args) {
 		new NettyServer().start();
 
 	}

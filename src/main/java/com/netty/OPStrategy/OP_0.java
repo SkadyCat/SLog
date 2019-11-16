@@ -16,20 +16,23 @@ public class OP_0  extends SLogStrategy{
         switch (_subCode){
 
             case 0:
-               // System.out.println("有玩家进入游戏");
+                System.out.println("有玩家进入游戏");
                 opRole = new Role(handler);
-                RoleMap.roleMapHashMap.put(handler.ID,opRole);
+                RoleMap.roleMapHashMap.put(handler.getID(),opRole);
                 RoleMap.resetuserList();
-                handler.context.channel().writeAndFlush(new DataModel((byte)0,(byte)0,handler.ID,new float[]{1.0f}).bytes);
+                handler.send(new DataModel((byte)0,(byte)0,handler.getID(),new float[]{1.0f}));
 
                 break;
 
             case 2:
-
+//
                 if (data.strContent .equals("qbs")){
                     System.out.println("获取所有数据"+RoleMap.userList);
                     RoleMap.resetAllPosition();
-                    RoleMap.BroadCast(0,1,RoleMap.userList,RoleMap.posList);
+                    handler.send(new DataModel((byte) 0,(byte)1,RoleMap.userList,RoleMap.posList));
+                    // RoleMap.BroadCast(0,1,RoleMap.userList,RoleMap.posList);
+
+
                 }
 
                // System.out.println();
@@ -37,14 +40,18 @@ public class OP_0  extends SLogStrategy{
                 break;
             case 1:
 
-                //System.out.println("更新方向信息");
-                opRole = RoleMap.roleMapHashMap.get(handler.ID);
+//                //System.out.println("更新方向信息");
+                opRole = RoleMap.roleMapHashMap.get(handler.getID());
                 opRole.dir = new Vector3(data.floatList[0],data.floatList[1],data.floatList[2]);
-                //System.out.println(opRole.id +">>"+opRole.dir.toString());
-
+//                //System.out.println(opRole.id +">>"+opRole.dir.toString());
+                opRole.move(opRole.dir);
+                //RoleMap.resetAllPosition();
+               // System.out.println(opRole.position);
+                handler.send(new DataModel((byte)0,(byte)2,opRole.id,new float[]{opRole.position.x,
+                        opRole.position.y,opRole.position.z}));
                 break;
             case 123:
-                System.out.println(data.strContent);
+//                System.out.println(data.strContent);
 
                 break;
         }

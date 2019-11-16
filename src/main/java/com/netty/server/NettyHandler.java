@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class NettyHandler extends ChannelInboundHandlerAdapter {
+public class NettyHandler extends ChannelInboundHandlerAdapter implements IHandler {
 
 
 	public String ID;
@@ -56,6 +56,17 @@ public class NettyHandler extends ChannelInboundHandlerAdapter {
 	}
 	byte[] strLen = new byte[4];
 	byte[] floatLen = new byte[4];
+
+	@Override
+	public String getID() {
+		return null;
+	}
+
+	@Override
+	public void send(DataModel model) {
+
+	}
+
 	public void  process(byte[] data){
 
 

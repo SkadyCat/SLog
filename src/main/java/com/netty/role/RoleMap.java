@@ -18,9 +18,9 @@ public class RoleMap {
         DataModel sdModel = new DataModel((byte)mainCode,(byte)subCode,sendStr,fl);
         for (Role rl:roleMapHashMap.values()
              ) {
-            if (rl.handler.context.channel().isWritable() == true){
-                rl.handler.context.channel().writeAndFlush(sdModel.bytes);
-            }
+//            if (rl.handler.context.channel().isWritable() == true){
+//                rl.handler.context.channel().writeAndFlush(sdModel.bytes);
+//            }
 
 
         }

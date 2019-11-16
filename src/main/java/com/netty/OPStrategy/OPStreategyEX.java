@@ -1,16 +1,20 @@
 package com.netty.OPStrategy;
 
 import com.netty.server.DataModel;
+import com.netty.server.IHandler;
 import com.netty.server.NettyHandler;
+import com.netty.server.udpserver.UDPHandler;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 public abstract class OPStreategyEX extends  OPStrategy {
 
-    public NettyHandler handler;
+    public IHandler handler;
+
 
     DataModel data;
 
     @Override
-    public void doSomething(NettyHandler handler,DataModel value) {
+    public void doSomething(IHandler handler,DataModel value) {
         this.handler = handler;
 
         this.data = value;
