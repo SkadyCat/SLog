@@ -9,11 +9,13 @@ import com.netty.role.RoleMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import jdk.nashorn.internal.runtime.Debug;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -117,11 +119,22 @@ public class NettyHandler extends ChannelInboundHandlerAdapter implements IHandl
 		}
 		if(strategy != null){
 
-			strategy.doSomething(this,model);
+		//strategy.doSomething(this,model);
 		}
 
 
 	}
+
+	@Override
+	public void send(DataModel model, InetSocketAddress dap) {
+
+	}
+
+	@Override
+	public void process(byte[] data, DatagramPacket dap) {
+
+	}
+
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		try {

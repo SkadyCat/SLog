@@ -19,7 +19,7 @@ public class RoleMap {
         for (Role rl:roleMapHashMap.values()
              ) {
 
-            rl.handler.send(sdModel);
+            rl.handler.send(sdModel,rl.dap.sender());
 //            if (rl.handler.context.channel().isWritable() == true){
 //                rl.handler.context.channel().writeAndFlush(sdModel.bytes);
 //            }

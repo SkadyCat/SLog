@@ -1,5 +1,6 @@
 package com.netty.OPStrategy;
 
+import com.netty.Model.SendData;
 import com.netty.server.DataModel;
 import com.netty.server.IHandler;
 import com.netty.server.NettyHandler;
@@ -11,15 +12,15 @@ public abstract class OPStreategyEX extends  OPStrategy {
     public IHandler handler;
 
 
-    DataModel data;
+    SendData data;
 
     @Override
-    public void doSomething(IHandler handler,DataModel value) {
+    public void doSomething(IHandler handler,SendData value) {
         this.handler = handler;
 
         this.data = value;
 
-        subOP(this.data.subCode);
+        subOP(this.data.s);
 
     }
 
