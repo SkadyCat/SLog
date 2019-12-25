@@ -52,6 +52,7 @@ public class STimer extends TimerTask {
       //     RoleMap.BroadCast(0,2,RoleMap.userList,RoleMap.posList);
 
       // }
+        Room.updatePosition();
        String st = random.nextInt()+"";
         for (InetSocketAddress key :list){
 

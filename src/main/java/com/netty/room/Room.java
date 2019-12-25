@@ -9,7 +9,14 @@ import java.util.HashMap;
 
 public class Room {
     private static HashMap<String, PlayerModel> userMap = new HashMap<>();
+    public  static  void
+     updatePosition(){
 
+        for (String key : userMap.keySet()) {
+
+            userMap.get(key).updatePosition();
+        }
+    }
     public static void removePlayer(String userAcc)
     {
         userMap.remove(userAcc);
@@ -24,7 +31,7 @@ public class Room {
 
         for (String key : userMap.keySet()){
 
-            userMap.get(key).updatePosition();
+
 
 
             JSONObject jsonObject2 = userMap.get(key).getPositionInfo();
