@@ -135,7 +135,7 @@ public class UDPHandler extends
 
         if (mainCode%100 == 0){
 
-            System.out.println(sendData.toString());
+           // System.out.println(sendData.toString());
         }
         SendData sd = new SendData();
         sd.m = mainCode;
@@ -157,7 +157,7 @@ public class UDPHandler extends
                 break;
         }
         if(strategy != null){
-
+            strategy.sender = dap.sender();
             strategy.doSomething(this,sd);
         }
 
@@ -170,7 +170,7 @@ public class UDPHandler extends
         byte[] data = new byte[1024];
         datagramPacket.content().getBytes(0,data);
         process(data,datagramPacket);
-
+        STimer.addUser2List(datagramPacket.sender());
     }
 
     @Override

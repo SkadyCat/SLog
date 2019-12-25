@@ -1,10 +1,13 @@
 package com.netty.role;
 
 //import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import com.netty.room.Room;
 import com.netty.server.DataModel;
 import com.netty.server.NettyHandler;
 import com.netty.server.udpserver.UDPHandler;
 import com.netty.server.udpserver.UDPServer;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.socket.DatagramPacket;
 
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -15,6 +18,10 @@ public class STimer extends TimerTask {
     int runTimes = 0;
 
     public static List<InetSocketAddress> list = new ArrayList<>();
+    public static void removeUser(InetSocketAddress value){
+
+        list.remove(value);
+    }
     public static void addUser2List(InetSocketAddress value){
 
         if (list.contains(value))
@@ -48,7 +55,8 @@ public class STimer extends TimerTask {
        String st = random.nextInt()+"";
         for (InetSocketAddress key :list){
 
-            UDPServer.handler.send(new DataModel((byte)0,(byte)10,st,new float[]{1.0f}),key);
+            UDPServer.handler.context.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(Room.getAllPlayerPosition()), key));
+
         }
 
     }
@@ -57,7 +65,7 @@ public class STimer extends TimerTask {
 
         Timer timer = new Timer("我的定时器");           // 创建一个定时器
         STimer myTimerTask = new STimer();
-        timer.schedule(myTimerTask, 100, 2000);    //10秒后执行，周期为2秒
+        timer.schedule(myTimerTask, 100, 30);    //10秒后执行，周期为2秒
         //  handler.chan
     }
 }

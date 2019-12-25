@@ -2,7 +2,7 @@ package com.netty.Model;
 
 import net.sf.json.JSONObject;
 
-public class SendData {
+public class SendData extends Model {
     public int m;
     public int s;
 
