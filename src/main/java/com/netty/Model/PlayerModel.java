@@ -13,6 +13,16 @@ public class PlayerModel extends Model{
     public  float y;
     public  float z;
     public Vector3 dir = new Vector3();
+
+    public int getHeadJumpType() {
+        return headJumpType;
+    }
+
+    public void setHeadJumpType(int headJumpType) {
+        this.headJumpType = headJumpType;
+    }
+
+    private int headJumpType;
     public InetSocketAddress sender;
     public PlayerModel(String userAcc){
 

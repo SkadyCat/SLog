@@ -17,6 +17,14 @@ public class STimer extends TimerTask {
     public static NettyHandler handler;
     int runTimes = 0;
 
+    int headJumpValue = 0;
+    int headWaiting = 0;
+    public void  headJump(){
+
+        System.out.println("心跳一次");
+
+
+    }
     public static List<InetSocketAddress> list = new ArrayList<>();
     public static void removeUser(InetSocketAddress value){
 
@@ -37,21 +45,25 @@ public class STimer extends TimerTask {
     static  Random random = new Random();
     @Override
     public void run() {
-//        System.out.println("时间在运行！");
-      // for (Role ro:RoleMap.roleMapHashMap.values()
-      //      ) {
+        headJumpValue++;
+        if (headJumpValue>=100){
 
-      //     ro.position.add(ro.dir);
+            if (headJumpValue == 100){
 
-      // }
+                Room.BroadCast(Room.jumpModel());
+                Room.resetHeadJumpValue();
+                System.out.println("检查心跳");
+            }
+            if (headJumpValue>200){
 
-      // if (RoleMap.roleMapHashMap.size()>0){
-      //     //System.out.println(RoleMap.getPoseList());
-      //     RoleMap.resetAllPosition();
-      //
-      //     RoleMap.BroadCast(0,2,RoleMap.userList,RoleMap.posList);
 
-      // }
+                headJumpValue = 0;
+               // Room.removeDeadConnect();
+
+
+            }
+
+        }
         Room.updatePosition();
        String st = random.nextInt()+"";
         for (InetSocketAddress key :list){

@@ -1,12 +1,17 @@
 package com.netty.room;
 
 import com.netty.Model.PlayerModel;
+import com.netty.Model.SendData;
 import com.netty.Model.UserModel;
+import com.netty.role.STimer;
 import com.netty.server.udpserver.UDPServer;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Room {
     private static HashMap<String, PlayerModel> userMap = new HashMap<>();
@@ -103,8 +108,55 @@ public class Room {
         return  model;
 
     }
+    public static byte[] jumpModel(){
+        JSONObject jsonObject = new JSONObject();
 
+        jsonObject.put("m",0);
+        jsonObject.put("s",200);
 
+        return jsonObject.toString().getBytes();
+
+    }
+    public static void resetHeadJumpValue(){
+        for (String key : userMap.keySet()) {
+
+            userMap.get(key).setHeadJumpType(0);
+        }
+
+    }
+    public static void removeDeadConnect(){
+        List<String> detectAnswer = new ArrayList<>();
+        for (String key : userMap.keySet()) {
+
+         if (userMap.get(key).getHeadJumpType() == 0){
+
+             detectAnswer.add(key);
+
+         }
+        }
+        JSONArray deadList = new JSONArray();
+        for (String v:detectAnswer
+             ) {
+
+            STimer.removeUser(userMap.get(v).sender);
+            userMap.remove(v);
+
+        }
+        for (String key : userMap.keySet()) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userAcc",key);
+            deadList.add(jsonObject);
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",4);
+        jsonObject.put("value",deadList.toString());
+
+        Room.BroadCast(jsonObject.toString().getBytes());
+
+    }
     public static void BroadCast(byte[] value){
 
         for (PlayerModel model : userMap.values()){
