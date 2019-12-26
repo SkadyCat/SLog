@@ -12,6 +12,7 @@ import com.netty.room.Room;
 import com.netty.server.DataModel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import jdk.nashorn.internal.runtime.Debug;
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import java.net.InetSocketAddress;
@@ -27,7 +28,9 @@ public class OP_0  extends SLogStrategy{
 
                 System.out.println(model.user_acc+"<>"+model.user_pwd);
 
-                Room.addPlayerModel(model.user_acc);
+                Room.addPlayerModel(model.user_acc).sender = sender;
+                Room.BroadCast(Room.getAllUserInfo());
+
                 break;
             case 1:
 
@@ -42,8 +45,13 @@ public class OP_0  extends SLogStrategy{
                 break;
 
             case 3:
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("m",0);
+                jsonObject.put("s",3);
+                jsonObject.put("userAcc",data.originData.getString("user_acc"));
                 Room.removePlayer(data.originData.getString("user_acc"));
-                STimer.addUser2List(sender);
+                STimer.removeUser(sender);
+                Room.BroadCast(jsonObject.toString().getBytes());
                 break;
 
 
