@@ -43,32 +43,37 @@ public class STimer extends TimerTask {
 
     }
     static  Random random = new Random();
+    int headTimes;
+    int waitingReback;
+    boolean wait = false;
     @Override
     public void run() {
-        headJumpValue++;
-        if (headJumpValue>=100){
 
-            if (headJumpValue == 100){
+        try {
+            headJumpValue++;
+            headTimes++;
 
-                Room.BroadCast(Room.jumpModel());
-                Room.resetHeadJumpValue();
-                System.out.println("检查心跳");
-            }
-            if (headJumpValue>200){
+            if (headJumpValue == 201) {
 
-
+//             Room.BroadCast(Room.jumpModel());
+//              Room.resetHeadJumpValue();
+                Room.detectDeadConnect();
+//                wait = true;
                 headJumpValue = 0;
-               // Room.removeDeadConnect();
+            }
 
+            Room.updatePosition();
+            String st = random.nextInt()+"";
+            for (InetSocketAddress key :list){
+
+                UDPServer.handler.context.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(Room.getAllPlayerPosition()), key));
 
             }
 
-        }
-        Room.updatePosition();
-       String st = random.nextInt()+"";
-        for (InetSocketAddress key :list){
 
-            UDPServer.handler.context.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(Room.getAllPlayerPosition()), key));
+        }catch (Exception e){
+
+            System.out.println("捕获到异常");
 
         }
 

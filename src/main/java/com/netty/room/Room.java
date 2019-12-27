@@ -9,9 +9,12 @@ import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import javax.xml.datatype.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 public class Room {
     private static HashMap<String, PlayerModel> userMap = new HashMap<>();
@@ -124,6 +127,52 @@ public class Room {
         }
 
     }
+
+    public static void detectDeadConnect(){
+
+        Date date = new Date();
+        JSONArray jsonArray = new JSONArray();
+        List<String> deadList = new ArrayList<>();
+        for(PlayerModel md:userMap.values()
+             ) {
+
+            long diff = date.getTime() - md.headTime.getTime();
+            float sValue = diff/1000;
+
+            System.out.println(md.userAcc+"有那么多时间没理我了："+sValue);
+            if (sValue>10)
+            {
+                System.out.println(md.userAcc+"是僵尸号"+sValue);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("userAcc",md.userAcc);
+                jsonArray.add(jsonObject);
+                deadList.add(md.userAcc);
+
+            }
+            if (jsonArray.size()>0){
+
+                JSONObject jsonObject = new JSONObject();
+
+
+                jsonObject.put("m",0);
+                jsonObject.put("s",201);
+                jsonObject.put("value",jsonArray.toString());
+                BroadCast(jsonObject.toString().getBytes());
+
+
+            }
+
+
+
+        }
+        for (String key:deadList
+        ) {
+            STimer.removeUser(userMap.get(key).sender);
+            userMap.remove(key);
+
+        }
+
+    }
     public static void removeDeadConnect(){
         List<String> detectAnswer = new ArrayList<>();
         for (String key : userMap.keySet()) {
@@ -140,14 +189,12 @@ public class Room {
 
             STimer.removeUser(userMap.get(v).sender);
             userMap.remove(v);
-
-        }
-        for (String key : userMap.keySet()) {
-
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("userAcc",key);
+            jsonObject.put("userAcc", v);
             deadList.add(jsonObject);
+            System.out.println("僵尸角色："+jsonObject.toString());
         }
+
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("m",0);
@@ -158,7 +205,7 @@ public class Room {
 
     }
     public static void BroadCast(byte[] value){
-
+       // System.out.println(userMap.size()+"广播内容："+new String(value));
         for (PlayerModel model : userMap.values()){
 
             UDPServer.send(value,model.sender);

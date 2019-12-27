@@ -5,6 +5,7 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import java.net.InetSocketAddress;
+import java.util.Date;
 
 public class PlayerModel extends Model{
 
@@ -13,7 +14,7 @@ public class PlayerModel extends Model{
     public  float y;
     public  float z;
     public Vector3 dir = new Vector3();
-
+    public Date headTime = new Date();
     public int getHeadJumpType() {
         return headJumpType;
     }

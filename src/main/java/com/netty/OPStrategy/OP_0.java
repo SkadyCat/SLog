@@ -17,6 +17,7 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import java.net.InetSocketAddress;
+import java.util.Date;
 
 public class OP_0  extends SLogStrategy{
     public static  PlayerModel playerModel;
@@ -67,9 +68,11 @@ public class OP_0  extends SLogStrategy{
                 break;
             case 200:
 
-                playerModel.setHeadJumpType(100);
-                System.out.println("检查成功，还活着");
-                break;
+                //playerModel.setHeadJumpType(100);
+                // System.out.println(playerModel.userAcc + "该角色有反馈！");
+
+                      Room.getUserModel((data.originData.getString("user_acc"))).headTime = new Date();
+                   break;
         }
     }
 }
