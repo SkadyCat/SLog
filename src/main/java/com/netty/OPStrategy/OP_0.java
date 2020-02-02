@@ -9,6 +9,7 @@ import com.netty.common.Vector3;
 import com.netty.role.Role;
 import com.netty.role.RoleMap;
 import com.netty.role.STimer;
+import com.netty.room.MapInfo;
 import com.netty.room.Room;
 import com.netty.server.DataModel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -21,6 +22,13 @@ import java.util.Date;
 
 public class OP_0  extends SLogStrategy{
     public static  PlayerModel playerModel;
+
+    /**
+     * 更新怪物血条值
+     */
+    public static final int updateMonsterHp = 7;
+
+    public static final int bulletSender = 11;
     @Override
     public void subOP(int _subCode) {
         switch (_subCode){
@@ -33,11 +41,11 @@ public class OP_0  extends SLogStrategy{
                 playerModel =  Room.addPlayerModel(model.user_acc);
                 playerModel.sender = sender;
                 Room.BroadCast(Room.getAllUserInfo());
-
+                Room.BroadCast(MapInfo.monsterBornInfo().toString().getBytes());
                 break;
             case 1:
 
-               // System.out.println(data.originData);
+                //System.out.println(data.originData);
 
                 MoveModel model1 = (MoveModel) JSONObject.toBean(data.originData,MoveModel.class);
                 //
@@ -55,6 +63,7 @@ public class OP_0  extends SLogStrategy{
                 Room.removePlayer(data.originData.getString("user_acc"));
                 STimer.removeUser(sender);
                 Room.BroadCast(jsonObject.toString().getBytes());
+
                 break;
 
 
@@ -62,8 +71,24 @@ public class OP_0  extends SLogStrategy{
 
                 System.out.println("断开连接！");
                 break;
+
+            case updateMonsterHp:
+                 String monsterId =  data.originData.getString("userAcc");
+                 int deHpValue = data.originData.getInt("value");
+
+                 System.out.println(data.originData.toString());
+                 MapInfo.deHp(monsterId,deHpValue);
+
+                break;
+
+            case bulletSender:
+                Room.BroadCast(data.originData.toString().getBytes());
+
+                break;
             case 123:
 //                System.out.println(data.strContent);
+
+                //STimer.UDPBroadCast(MapInfo.getMonsterStatuInfo());
 
                 break;
             case 200:
@@ -71,7 +96,7 @@ public class OP_0  extends SLogStrategy{
                 //playerModel.setHeadJumpType(100);
                 // System.out.println(playerModel.userAcc + "该角色有反馈！");
 
-                      Room.getUserModel((data.originData.getString("user_acc"))).headTime = new Date();
+                    Room.getUserModel((data.originData.getString("user_acc"))).headTime = new Date();
                    break;
         }
     }

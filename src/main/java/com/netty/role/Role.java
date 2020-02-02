@@ -1,6 +1,7 @@
 package com.netty.role;
 
 import com.netty.common.Vector3;
+import com.netty.room.map.StatuInfo;
 import com.netty.server.IHandler;
 import com.netty.server.NettyHandler;
 import io.netty.channel.socket.DatagramPacket;
@@ -13,8 +14,11 @@ public class Role implements IRole {
 
     public Vector3 position;
     public IHandler handler;
+    public StatuInfo statuInfo;
+
     public String id;
     public Vector3 dir;
+    public float yr;
     public DatagramPacket dap;
 
     public Role(IHandler hd){
@@ -23,6 +27,8 @@ public class Role implements IRole {
         this.dir = new Vector3();
         handler = hd;
         id = UUID.randomUUID().toString();
+        statuInfo = new StatuInfo();
+
     }
 
     @Override

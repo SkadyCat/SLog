@@ -1,6 +1,7 @@
 package com.netty.server.udpserver;
 
 import com.netty.role.STimer;
+import com.netty.room.MapInfo;
 import com.netty.server.NettyDecoder;
 import com.netty.server.NettyEncoder;
 import com.netty.server.NettyHandler;
@@ -34,7 +35,7 @@ public class UDPServer {
     public void run(int port) throws Exception{
         STimer.exacute();
         EventLoopGroup group = new NioEventLoopGroup();
-
+        MapInfo.mapInit();
         EventLoopGroup childGroup = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
 
@@ -44,6 +45,9 @@ public class UDPServer {
 
       b.group(group).channel(NioDatagramChannel.class)
               .option(ChannelOption.SO_BROADCAST, true)//支持广播
+              .option(ChannelOption.SO_RCVBUF,1024*20)
+               .option(ChannelOption.SO_SNDBUF,1024*20)
+
               .handler(handler);//ChineseProverbServerHandler是业务处理类
       b.bind(port).sync().channel().closeFuture().await();
 

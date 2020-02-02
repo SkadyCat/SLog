@@ -127,12 +127,13 @@ public class UDPHandler extends
 
         String v1 = new String(data);
 
+
         JSONObject sendData = JSONObject.fromObject(v1);
 
 
         int mainCode = new Integer(sendData.get("m").toString());
         int subCode = new Integer(sendData.get("s").toString());
-
+//        System.out.println("->process "+sendData.toString());
         if (mainCode%100 == 0){
 
            // System.out.println(sendData.toString());
@@ -164,13 +165,24 @@ public class UDPHandler extends
 
 
     }
+   final byte[] data = new byte[1024*2];
 
+    public void  clearDataCahce(){
+
+        for (byte b:data
+             ) {
+
+            b = 0;
+        }
+    }
     @Override
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, DatagramPacket datagramPacket) throws Exception {
-        byte[] data = new byte[1024];
+
+        clearDataCahce();
         datagramPacket.content().getBytes(0,data);
         process(data,datagramPacket);
         STimer.addUser2List(datagramPacket.sender());
+
     }
 
     @Override

@@ -86,7 +86,7 @@ public class Room {
             }
         }
         jsonObject.put("value",jsonArray.toString());
-         System.out.println(jsonArray.toString());
+         System.out.println("getAll->"+jsonArray.toString());
 
          return jsonObject.toString().getBytes();
 

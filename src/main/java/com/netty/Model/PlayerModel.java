@@ -13,6 +13,7 @@ public class PlayerModel extends Model{
     public  float x;
     public  float y;
     public  float z;
+    public  float yr;
     public Vector3 dir = new Vector3();
     public Date headTime = new Date();
     public int getHeadJumpType() {

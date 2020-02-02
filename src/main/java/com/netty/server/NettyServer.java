@@ -24,8 +24,8 @@ public class NettyServer {
 		bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
 		bootstrap.childOption(ChannelOption.SO_REUSEADDR, true);
 		bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-		bootstrap.childOption(ChannelOption.SO_RCVBUF, 1048576);
-		bootstrap.childOption(ChannelOption.SO_SNDBUF, 1048576);
+		bootstrap.childOption(ChannelOption.SO_RCVBUF, 1024*20);
+		bootstrap.childOption(ChannelOption.SO_SNDBUF, 1024*20);
 		//bootstrap.childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK,new WriteBuffer)
 		bootstrap.channel(NioServerSocketChannel.class);
 		bootstrap.childHandler(new ChannelInitializer<NioSocketChannel>() {
