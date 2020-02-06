@@ -1,16 +1,14 @@
 package com.netty.OPStrategy;
 
 import com.netty.DB.UserInfoDBOP;
-import com.netty.Model.LoginModel;
-import com.netty.Model.MoveModel;
-import com.netty.Model.PlayerModel;
-import com.netty.Model.UserModel;
+import com.netty.Model.*;
 import com.netty.common.Vector3;
 import com.netty.role.Role;
 import com.netty.role.RoleMap;
 import com.netty.role.STimer;
 import com.netty.room.MapInfo;
 import com.netty.room.Room;
+import com.netty.room.farminfo.FarmInfoFactory;
 import com.netty.server.DataModel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import jdk.nashorn.internal.runtime.Debug;
@@ -29,6 +27,9 @@ public class OP_0  extends SLogStrategy{
     public static final int updateMonsterHp = 7;
 
     public static final int bulletSender = 11;
+    public static final int addFarm = 15;
+    public static final int userItem = 16;
+
     @Override
     public void subOP(int _subCode) {
         switch (_subCode){
@@ -42,6 +43,9 @@ public class OP_0  extends SLogStrategy{
                 playerModel.sender = sender;
                 Room.BroadCast(Room.getAllUserInfo());
                 Room.BroadCast(MapInfo.monsterBornInfo().toString().getBytes());
+                Room.BroadCast(FarmInfoFactory.FarmAllInfo().toString().getBytes());
+                Room.singleSend(sender,playerModel.getBagInfo());
+
                 break;
             case 1:
 
@@ -56,6 +60,7 @@ public class OP_0  extends SLogStrategy{
                 break;
 
             case 3:
+                System.out.println("用户移除"+data.originData);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("m",0);
                 jsonObject.put("s",3);
@@ -83,6 +88,27 @@ public class OP_0  extends SLogStrategy{
 
             case bulletSender:
                 Room.BroadCast(data.originData.toString().getBytes());
+
+                break;
+
+            case addFarm:
+
+                jsonObject = JSONObject.fromObject(data.originData);
+                FarmData model2 = (FarmData) JSONObject.toBean(jsonObject,FarmData.class);
+
+                FarmInfoFactory.getInstance().insertNewFarm(model2.getUserAcc(),
+                        new Vector3(model2.getX(),model2.getY(),model2.getZ()),
+                        model2.getRange()
+                        );
+
+
+                break;
+            case  userItem:
+                System.out.println(data.originData);
+                jsonObject = JSONObject.fromObject(data.originData);
+                UserItemModel userItemModel = (UserItemModel) JSONObject.toBean(jsonObject,UserItemModel.class);
+                playerModel = Room.getUserModel(userItemModel.getUserAcc());
+                playerModel.useItem(userItemModel.getItemID());
 
                 break;
             case 123:

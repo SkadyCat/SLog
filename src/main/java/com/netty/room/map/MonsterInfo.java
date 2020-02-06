@@ -26,6 +26,7 @@ public class MonsterInfo extends MapBaseInfo {
         statuInfo.setMaxhp(100);
         statuInfo.setAgi(10);
         statuInfo.setId(id);
+
     }
 
     /**
@@ -65,7 +66,7 @@ public class MonsterInfo extends MapBaseInfo {
 
         this.dir = this.dir.random();
         this.dir = this.dir.normal();
-        this.dir.mul(0.05f);
+        this.dir.mul(2);
        // System.out.println(this.dir.toString());
 
 
@@ -73,7 +74,13 @@ public class MonsterInfo extends MapBaseInfo {
     }
 
     public void updatePosition(){
-        this.position.add(this.dir);
+
+            updateDir();
+            this.position.add(this.dir);
+
+
+
+
     }
 
     @Override
@@ -96,7 +103,7 @@ public class MonsterInfo extends MapBaseInfo {
         this.position = new Vector3();
         this.position.random();
         this.position.normal();
-        this.position.mul(2);
+        this.position.mul(50);
     }
 
     @Override

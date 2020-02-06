@@ -3,9 +3,11 @@ package com.netty.room.map;
 import com.netty.role.Role;
 import com.netty.server.IHandler;
 
+import java.util.Random;
+
 public abstract class MapBaseInfo {
 
-
+    public static Random random = new Random();
     public int getTime() {
         return time;
     }

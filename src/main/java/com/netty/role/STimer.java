@@ -55,10 +55,12 @@ public class STimer extends TimerTask implements IOBViewer {
     boolean wait = false;
 
     public static void UDPBroadCast(byte[] info){
-        for (InetSocketAddress key :list){
 
-            UDPServer.handler.context.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(info), key));
-        }
+        Room.BroadCast(info);
+     //for (InetSocketAddress key :list){
+
+     //    UDPServer.handler.context.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(info), key));
+     //}
     }
 
     private static Queue<byte[]> sendInfo = new LinkedList<>();

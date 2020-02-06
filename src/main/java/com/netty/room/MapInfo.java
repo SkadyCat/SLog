@@ -14,7 +14,7 @@ import java.util.*;
 
 public class MapInfo implements IViewer {
 
-
+    public  static  Random random = new Random();
     public static MapInfo Instance;
 
     public static void mapInit(){
@@ -40,7 +40,8 @@ public class MapInfo implements IViewer {
             MonsterInfo monsterInfo = new MonsterInfo(i+"");
 
             monsterInfo.init();
-            monsterInfoList.put(i+"",monsterInfo);
+           // System.out.println(monsterInfo.statuInfo.getId());
+            monsterInfoList.put(monsterInfo.statuInfo.getId(),monsterInfo);
 
         }
     }
@@ -62,7 +63,13 @@ public class MapInfo implements IViewer {
 
         for (MonsterInfo info : monsterInfoList.values()){
 
+            if (random.nextInt()%4 == 0) {
+
+                info.updatePosition();
+
+            }
             jsonArray.add(info.getMonsterPosInfo());
+
         }
 //        System.out.println("位置长度："+jsonArray.size());
         jsonObject.put("value",jsonArray);
@@ -85,6 +92,8 @@ public class MapInfo implements IViewer {
     }
     public static void dead(String monsterID){
 
+
+
         monsterInfoList.remove(monsterID);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("m",0);
@@ -98,6 +107,7 @@ public class MapInfo implements IViewer {
         if (info == null){
 
             System.out.println("monster为空！"+monsterID);
+            return;
         }
 
         boolean deadStatu = info.statuInfo.dehp(hp);
@@ -149,20 +159,24 @@ public class MapInfo implements IViewer {
 
                    // STimer.UDPBroadCast();
 //                    System.out.println("广播怪物位置"+monsterInfo().toString());
-                    STimer.addBroadCastInfo(monsterPosInfo().toString().getBytes());
+
+
+                        STimer.addBroadCastInfo(monsterPosInfo().toString().getBytes());
+
+
 
                 }
-                if (tim1 == 400){
-                    for (MonsterInfo i2:monsterInfoList.values()
-                    ) {
-                        i2.updateDir();
-                    }
-                    tim1 = 0;
-                }
-                for (MonsterInfo i2:monsterInfoList.values()
-                ) {
-                    i2.updatePosition();
-                }
+               // if (tim1 == 400){
+               //     for (MonsterInfo i2:monsterInfoList.values()
+               //     ) {
+               //         i2.updateDir();
+               //     }
+               //     tim1 = 0;
+               // }
+               // for (MonsterInfo i2:monsterInfoList.values()
+               // ) {
+               //
+               // }
                 break;
 
 

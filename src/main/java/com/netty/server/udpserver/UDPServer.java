@@ -2,6 +2,8 @@ package com.netty.server.udpserver;
 
 import com.netty.role.STimer;
 import com.netty.room.MapInfo;
+import com.netty.room.farminfo.FarmInfo;
+import com.netty.room.farminfo.FarmInfoFactory;
 import com.netty.server.NettyDecoder;
 import com.netty.server.NettyEncoder;
 import com.netty.server.NettyHandler;
@@ -34,6 +36,7 @@ public class UDPServer {
     }
     public void run(int port) throws Exception{
         STimer.exacute();
+        FarmInfoFactory.getInstance();
         EventLoopGroup group = new NioEventLoopGroup();
         MapInfo.mapInit();
         EventLoopGroup childGroup = new NioEventLoopGroup();

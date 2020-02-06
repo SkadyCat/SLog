@@ -5,11 +5,14 @@ import com.netty.Model.SendData;
 import com.netty.Model.UserModel;
 import com.netty.role.STimer;
 import com.netty.server.udpserver.UDPServer;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import javax.xml.datatype.Duration;
+import java.net.InetSocketAddress;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,12 +30,28 @@ public class Room {
         for (String key : userMap.keySet()) {
 
             userMap.get(key).updatePosition();
+
+//            System.out.println("用户状态："+userMap.get(key).getLoginStatu());
         }
     }
     public static void removePlayer(String userAcc)
     {
-        userMap.remove(userAcc);
+        if (userMap.containsKey(userAcc)){
 
+            userMap.get(userAcc).setLoginStatu(-1);
+
+        }
+
+    }
+
+    public static void singleSend(InetSocketAddress address, byte[] data){
+
+
+        UDPServer.send(data,address);
+    }
+    public static void singleSend(InetSocketAddress address, JSONObject jsonObject){
+        System.out.println(jsonObject.toString());
+        UDPServer.send(jsonObject.toString().getBytes(),address);
     }
     public static byte[] getAllPlayerPosition(){
         JSONObject jsonObject = new JSONObject();
@@ -105,10 +124,16 @@ public class Room {
 
     }
     public  static  PlayerModel addPlayerModel(String userAcc){
-        PlayerModel model = new PlayerModel(userAcc);
-        userMap.put(userAcc,model);
 
-        return  model;
+        if (userMap.containsKey(userAcc)){
+        }else {
+            PlayerModel model = new PlayerModel(userAcc);
+            userMap.put(userAcc,model);
+        }
+
+        userMap.get(userAcc).setLoginStatu(1);
+        userMap.get(userAcc).headTime = new Date();
+        return  userMap.get(userAcc);
 
     }
     public static byte[] jumpModel(){
@@ -140,7 +165,7 @@ public class Room {
             float sValue = diff/1000;
 
             System.out.println(md.userAcc+"有那么多时间没理我了："+sValue);
-            if (sValue>10)
+            if (sValue>30)
             {
                 System.out.println(md.userAcc+"是僵尸号"+sValue);
                 JSONObject jsonObject = new JSONObject();
@@ -168,7 +193,7 @@ public class Room {
         for (String key:deadList
         ) {
             STimer.removeUser(userMap.get(key).sender);
-            userMap.remove(key);
+            userMap.get(key).setLoginStatu(-1);
 
         }
 
@@ -208,9 +233,21 @@ public class Room {
        // System.out.println(userMap.size()+"广播内容："+new String(value));
         for (PlayerModel model : userMap.values()){
 
-            UDPServer.send(value,model.sender);
+            if (model.getLoginStatu() == 1){
+
+                UDPServer.send(value,model.sender);
+            }
+
 
         }
+
+
+    }
+
+    public static void BroadCast(SendData data){
+        // System.out.println(userMap.size()+"广播内容："+new String(value));
+        JSONObject jsonObject = JSONObject.fromObject(data);
+        BroadCast(jsonObject.toString().getBytes());
 
 
     }
