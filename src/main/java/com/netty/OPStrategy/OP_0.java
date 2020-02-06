@@ -63,10 +63,10 @@ public class OP_0  extends SLogStrategy{
                 System.out.println("用户移除"+data.originData);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("m",0);
-                jsonObject.put("s",3);
+                jsonObject.put("s",20);
                 jsonObject.put("userAcc",data.originData.getString("user_acc"));
                 Room.removePlayer(data.originData.getString("user_acc"));
-                STimer.removeUser(sender);
+
                 Room.BroadCast(jsonObject.toString().getBytes());
 
                 break;

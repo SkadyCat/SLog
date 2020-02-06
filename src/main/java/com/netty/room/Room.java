@@ -95,14 +95,19 @@ public class Room {
 
 
 
+            if (userMap.get(key).getLoginStatu() == 1){
 
-            JSONObject jsonObject2 = userMap.get(key).getUserInfo();
+                JSONObject jsonObject2 = userMap.get(key).getUserInfo();
 
-            if (jsonObject2.get("userAcc")!= null){
+                if (jsonObject2.get("userAcc")!= null){
 
-                jsonArray.add(jsonObject2);
-                //  System.out.println(jsonObject2.toString());
+                    jsonArray.add(jsonObject2);
+                    //  System.out.println(jsonObject2.toString());
+                }
+
             }
+
+
         }
         jsonObject.put("value",jsonArray.toString());
          System.out.println("getAll->"+jsonArray.toString());
@@ -164,10 +169,10 @@ public class Room {
             long diff = date.getTime() - md.headTime.getTime();
             float sValue = diff/1000;
 
-            System.out.println(md.userAcc+"有那么多时间没理我了："+sValue);
+//            System.out.println(md.userAcc+"有那么多时间没理我了："+sValue);
             if (sValue>30)
             {
-                System.out.println(md.userAcc+"是僵尸号"+sValue);
+//                System.out.println(md.userAcc+"是僵尸号"+sValue);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("userAcc",md.userAcc);
                 jsonArray.add(jsonObject);
