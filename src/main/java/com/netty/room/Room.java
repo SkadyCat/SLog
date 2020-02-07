@@ -11,6 +11,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import javax.xml.datatype.Duration;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -249,10 +250,14 @@ public class Room {
 
     }
 
-    public static void BroadCast(SendData data){
+    public static void BroadCast(SendData data) {
         // System.out.println(userMap.size()+"广播内容："+new String(value));
         JSONObject jsonObject = JSONObject.fromObject(data);
-        BroadCast(jsonObject.toString().getBytes());
+        try {
+            BroadCast(jsonObject.toString().getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
 
     }

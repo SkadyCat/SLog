@@ -42,6 +42,7 @@ public class PlayerModel extends Model{
 
     private HashMap<Integer, Item> itemMap = new HashMap<>();
 
+    private HashMap<Integer,Item> cropItem = new HashMap<>();
     public void  addItem(int id){
         if (itemMap.containsKey(id)){
 
