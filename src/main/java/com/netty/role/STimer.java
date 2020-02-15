@@ -69,7 +69,7 @@ public class STimer extends TimerTask implements IOBViewer {
 
         sendInfo.offer(info);
     }
-
+    int upTime = 0;
     @Override
     public void run() {
 
@@ -86,7 +86,12 @@ public class STimer extends TimerTask implements IOBViewer {
                 headJumpValue = 0;
             }
 
-            Room.updatePosition();
+            if (upTime %2 == 0){
+
+                Room.updatePosition();
+            }
+            upTime ++;
+
             String st = random.nextInt()+"";
            // System.out.println(new String(Room.getAllPlayerPosition()));
 //            for (InetSocketAddress key :list){

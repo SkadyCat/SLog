@@ -3,7 +3,10 @@ package com.netty.Model;
 import com.netty.common.Vector3;
 import com.netty.item.Item;
 import com.netty.item.ItemFactory;
+import com.netty.item.crop.plant.Plant1;
 import com.netty.room.farminfo.FarmInfoFactory;
+import com.netty.room.map.StaticItem;
+import com.netty.room.map.StaticResInfo;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -50,6 +53,7 @@ public class PlayerModel extends Model{
             return;
         }
         itemMap.put(id, ItemFactory.factory(id));
+
     }
     public JSONObject getBagInfo(){
         JSONObject jsonObject = new JSONObject();
@@ -81,8 +85,18 @@ public class PlayerModel extends Model{
 
 
         this.userAcc = userAcc;
-        this.addItem(ItemFactory.housePaper);
+
+        initPlayerRes();
     }
+    public void  initPlayerRes(){
+
+        this.addItem(ItemFactory.housePaper);
+        this.addItem(ItemFactory.plant1);
+        this.addItem(ItemFactory.soilItem);
+
+        StaticResInfo.addItem(new StaticItem(2001,0,0,0,this.userAcc));
+    }
+
     public JSONObject getUserInfo(){
         JSONObject jsonObject = new JSONObject();
 

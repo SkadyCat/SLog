@@ -1,15 +1,16 @@
 package com.netty.item.crop.plant;
 
+import com.netty.item.Item;
 import com.netty.item.crop.Plant;
 
-public class Plant1 extends Plant {
+public class Plant1 extends Item {
 
     @Override
     public void init() {
-        super.init();
-        setItem_name("红果");
+
+        setItem_name("练实");
         setId(1101);
-        setMatureTime(10);
-        //setDescribe("");
+
+        setDescribe("非梧桐不止，非练实不食，非醴泉不饮");
     }
 }

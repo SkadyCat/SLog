@@ -9,6 +9,8 @@ import com.netty.role.STimer;
 import com.netty.room.MapInfo;
 import com.netty.room.Room;
 import com.netty.room.farminfo.FarmInfoFactory;
+import com.netty.room.map.StaticItem;
+import com.netty.room.map.StaticResInfo;
 import com.netty.server.DataModel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import jdk.nashorn.internal.runtime.Debug;
@@ -29,6 +31,8 @@ public class OP_0  extends SLogStrategy{
     public static final int bulletSender = 11;
     public static final int addFarm = 15;
     public static final int userItem = 16;
+    public static final int initStaticRes = 25;
+    public static final int addNewFarmStaticItem = 26;
 
     @Override
     public void subOP(int _subCode) {
@@ -44,16 +48,19 @@ public class OP_0  extends SLogStrategy{
                 Room.BroadCast(Room.getAllUserInfo());
                 Room.BroadCast(MapInfo.monsterBornInfo().toString().getBytes());
                 Room.BroadCast(FarmInfoFactory.FarmAllInfo().toString().getBytes());
+                Room.BroadCast(StaticResInfo.getStaticJson().toString().getBytes());
                 Room.singleSend(sender,playerModel.getBagInfo());
 
                 break;
             case 1:
 
-                //System.out.println(data.originData);
+                System.out.println(data.originData);
 
                 MoveModel model1 = (MoveModel) JSONObject.toBean(data.originData,MoveModel.class);
                 //
                 Room.getUserModel(model1.getUserAcc()).setDir(model1.getX(),model1.getY(),model1.getZ());
+
+//                Room.getUserModel(model1.getUserAcc()).updatePosition();
                 break;
             case 2:
 
@@ -110,6 +117,13 @@ public class OP_0  extends SLogStrategy{
                 playerModel = Room.getUserModel(userItemModel.getUserAcc());
                 playerModel.useItem(userItemModel.getItemID());
 
+                break;
+
+            case  addNewFarmStaticItem:
+                jsonObject = JSONObject.fromObject(data.originData);
+                StaticItem staticItem = (StaticItem) JSONObject.toBean(jsonObject,StaticItem.class);
+                StaticResInfo.addItem(staticItem);
+                Room.BroadCast(staticItem);
                 break;
             case 123:
 //                System.out.println(data.strContent);
