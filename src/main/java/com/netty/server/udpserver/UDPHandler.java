@@ -23,6 +23,8 @@ import javax.xml.crypto.Data;
 import java.awt.font.TextHitInfo;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Random;
 import java.util.UUID;
@@ -121,46 +123,87 @@ public class UDPHandler extends
         context.channel().writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(model.bytes), dap));
 
     }
+    public static float[] asFloatArray(byte[] input){
+        if(null == input ){
+            return null;
+        }
+        FloatBuffer buffer = ByteBuffer.wrap(input).asFloatBuffer();
+        float[] res = new float[buffer.remaining()];
+        buffer.get(res);
+        return res;
+    }
+    public static float getFloat(byte[] b) {
+        int accum = 0;
+        accum = accum|(b[0] & 0xff) << 0;
+        accum = accum|(b[1] & 0xff) << 8;
+        accum = accum|(b[2] & 0xff) << 16;
+        accum = accum|(b[3] & 0xff) << 24;
 
+        return Float.intBitsToFloat(accum);
+    }
     @Override
     public void process(byte[] data, DatagramPacket dap) {
 
-        String v1 = new String(data);
 
 
-        JSONObject sendData = JSONObject.fromObject(v1);
+
+        if (data[0] == 123){
+
+            String v1 = new String(data);
 
 
-        int mainCode = new Integer(sendData.get("m").toString());
-        int subCode = new Integer(sendData.get("s").toString());
+            JSONObject sendData = JSONObject.fromObject(v1);
+            int mainCode = new Integer(sendData.get("m").toString());
+            int subCode = new Integer(sendData.get("s").toString());
 //        System.out.println("->process "+sendData.toString());
-        if (mainCode%100 == 0){
+            if (mainCode%100 == 0){
 
-           // System.out.println(sendData.toString());
+                // System.out.println(sendData.toString());
+            }
+            SendData sd = new SendData();
+            sd.m = mainCode;
+            sd.s = subCode;
+            sd.originData = sendData;
+            //DataModel model2 = new DataModel((byte)5,(byte)5,"89898989",new float[]{1.312f,123.2f});
+            OPStrategy strategy = null;
+            switch (sd.m){
+
+                case 0:
+                    strategy = new OP_0();
+                    break;
+
+                case 10:
+                    strategy = new OP_10();
+                    break;
+
+                default:
+                    break;
+            }
+            if(strategy != null){
+                strategy.sender = dap.sender();
+                strategy.doSomething(this,sd);
+            }
+
         }
-        SendData sd = new SendData();
-        sd.m = mainCode;
-        sd.s = subCode;
-        sd.originData = sendData;
-        //DataModel model2 = new DataModel((byte)5,(byte)5,"89898989",new float[]{1.312f,123.2f});
-        OPStrategy strategy = null;
-        switch (sd.m){
+        if (data[0] == 110){
+            byte[] tempList = new byte[4];
+            float[] floatList = new float[data[1]*3];
+            System.out.println(data.length);
+            for (int i =0;i<data[1]*3;i++){
+                tempList[0] = data[i*4+2];
+                tempList[1] = data[i*4+3];
+                tempList[2] = data[i*4+4];
+                tempList[3] = data[i*4+5];
+                floatList[i] = getFloat(tempList);
+            }
+            String xv = "x = "+floatList[0]+" y ="+floatList[1]+" z = "+floatList[2];
 
-            case 0:
-                strategy = new OP_0();
-                break;
+            System.out.println(xv);
 
-            case 10:
-                strategy = new OP_10();
-                break;
 
-            default:
-                break;
+
         }
-        if(strategy != null){
-            strategy.sender = dap.sender();
-            strategy.doSomething(this,sd);
-        }
+
 
 
 
