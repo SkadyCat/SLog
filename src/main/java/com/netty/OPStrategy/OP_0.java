@@ -54,7 +54,7 @@ public class OP_0  extends SLogStrategy{
                 break;
             case 1:
 
-                System.out.println(data.originData);
+                //System.out.println(data.originData);
 
                 MoveModel model1 = (MoveModel) JSONObject.toBean(data.originData,MoveModel.class);
                 //

@@ -85,12 +85,7 @@ public class STimer extends TimerTask implements IOBViewer {
                 Room.detectDeadConnect();
                 headJumpValue = 0;
             }
-
-            if (upTime %2 == 0){
-
-                Room.updatePosition();
-            }
-            upTime ++;
+            Room.updatePosition();
 
             String st = random.nextInt()+"";
            // System.out.println(new String(Room.getAllPlayerPosition()));
@@ -122,7 +117,7 @@ public class STimer extends TimerTask implements IOBViewer {
 
         Timer timer = new Timer("我的定时器");           // 创建一个定时器
         STimer myTimerTask = new STimer();
-        timer.schedule(myTimerTask, 100, 30);    //10秒后执行，周期为2秒
+        timer.schedule(myTimerTask, 100, 15);    //10秒后执行，周期为2秒
         Instance = myTimerTask;
         //  handler.chan
     }
