@@ -6,6 +6,7 @@ import com.netty.OPStrategy.OP_0;
 import com.netty.OPStrategy.OP_10;
 import com.netty.role.RoleMap;
 import com.netty.role.STimer;
+import com.netty.room.Room;
 import com.netty.server.DataModel;
 import com.netty.server.IHandler;
 import com.netty.server.NettyDecoder;
@@ -187,19 +188,19 @@ public class UDPHandler extends
         }
         if (data[0] == 110){
             byte[] tempList = new byte[4];
-            float[] floatList = new float[data[1]*3];
-            System.out.println(data.length);
-            for (int i =0;i<data[1]*3;i++){
+            float[] floatList = new float[3];
+//            System.out.println(data.length);
+            for (int i =0;i<1*3;i++){
                 tempList[0] = data[i*4+2];
                 tempList[1] = data[i*4+3];
                 tempList[2] = data[i*4+4];
                 tempList[3] = data[i*4+5];
                 floatList[i] = getFloat(tempList);
             }
-            String xv = "x = "+floatList[0]+" y ="+floatList[1]+" z = "+floatList[2];
+//            String xv = "x = "+floatList[0]+" y ="+floatList[1]+" z = "+floatList[2];
 
-            System.out.println(xv);
-
+//            System.out.println(xv);
+            Room.playerModelList.get(data[1]).setDir(floatList[0],floatList[1],floatList[2]);
 
 
         }

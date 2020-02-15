@@ -94,8 +94,6 @@ public class Room {
 
         for (String key : userMap.keySet()){
 
-
-
             if (userMap.get(key).getLoginStatu() == 1){
 
                 JSONObject jsonObject2 = userMap.get(key).getUserInfo();
@@ -110,7 +108,7 @@ public class Room {
 
 
         }
-        jsonObject.put("value",jsonArray.toString());
+         jsonObject.put("value",jsonArray.toString());
          System.out.println("getAll->"+jsonArray.toString());
 
          return jsonObject.toString().getBytes();
@@ -129,11 +127,15 @@ public class Room {
         return  userMap.get(userAcc);
 
     }
+
+    public static List<PlayerModel> playerModelList = new ArrayList<>();
     public  static  PlayerModel addPlayerModel(String userAcc){
 
         if (userMap.containsKey(userAcc)){
         }else {
             PlayerModel model = new PlayerModel(userAcc);
+            model.setIndex(playerModelList.size());
+            playerModelList.add(model);
             userMap.put(userAcc,model);
         }
 

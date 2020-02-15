@@ -28,6 +28,16 @@ public class PlayerModel extends Model{
     }
 
     public String userAcc = "";
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    private int index;
     public  float x;
     public  float y;
     public  float z;
@@ -104,6 +114,7 @@ public class PlayerModel extends Model{
         jsonObject.put("x",x);
         jsonObject.put("y",y);
         jsonObject.put("z",z);
+        jsonObject.put("index",index);
         return jsonObject;
 
     }
