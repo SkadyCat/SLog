@@ -4,7 +4,17 @@ public class MoveModel extends  SendData {
 
     private String userAcc;
     private  float x;
-public  MoveModel(String userAcc,float x,float y, float z){
+    private int index;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public  MoveModel(String userAcc, float x, float y, float z){
 
     this.userAcc = userAcc;
     this.x = x;

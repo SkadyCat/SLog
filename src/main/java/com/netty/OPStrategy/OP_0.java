@@ -56,9 +56,9 @@ public class OP_0  extends SLogStrategy{
 
                 //System.out.println(data.originData);
 
-                MoveModel model1 = (MoveModel) JSONObject.toBean(data.originData,MoveModel.class);
-                //
-                Room.getUserModel(model1.getUserAcc()).setDir(model1.getX(),model1.getY(),model1.getZ());
+            //  MoveModel model1 = (MoveModel) JSONObject.toBean(data.originData,MoveModel.class);
+            //  //
+            //  Room.getUserModel(model1.getUserAcc()).setDir(model1.getX(),model1.getY(),model1.getZ());
 
 //                Room.getUserModel(model1.getUserAcc()).updatePosition();
                 break;

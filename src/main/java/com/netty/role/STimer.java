@@ -87,6 +87,7 @@ public class STimer extends TimerTask implements IOBViewer {
             }
             Room.updatePosition();
 
+            Room.BroadCast(Room.getAllPosition());
             String st = random.nextInt()+"";
            // System.out.println(new String(Room.getAllPlayerPosition()));
 //            for (InetSocketAddress key :list){
@@ -96,7 +97,7 @@ public class STimer extends TimerTask implements IOBViewer {
 //            }
 
 
-            sendInfo.offer(Room.getAllPlayerPosition());
+            //sendInfo.offer(Room.getAllPlayerPosition());
             while (!sendInfo.isEmpty()){
 
                 UDPBroadCast(sendInfo.poll());

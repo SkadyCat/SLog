@@ -12,8 +12,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class PlayerModel extends Model{
 
@@ -27,6 +29,33 @@ public class PlayerModel extends Model{
         this.loginStatu = loginStatu;
     }
 
+    public static byte[] float2byte(float f) {
+
+        // 把float转换为byte[]
+        int fbit = Float.floatToIntBits(f);
+
+        byte[] b = new byte[4];
+        for (int i = 0; i < 4; i++) {
+            b[i] = (byte) (fbit >> ( i * 8));
+        }
+
+    //// 翻转数组
+    //int len = b.length;
+    //// 建立一个与源数组元素类型相同的数组
+    //byte[] dest = new byte[len];
+    //// 为了防止修改源数组，将源数组拷贝一份副本
+    //System.arraycopy(b, 0, dest, 0, len);
+    //byte temp;
+    //// 将顺位第i个与倒数第i个交换
+    //for (int i = 0; i < len / 2; ++i) {
+    //    temp = dest[i];
+    //    dest[i] = dest[len - i - 1];
+    //    dest[len - i - 1] = temp;
+    //}
+
+        return b;
+
+    }
     public String userAcc = "";
 
     public int getIndex() {
@@ -36,7 +65,38 @@ public class PlayerModel extends Model{
     public void setIndex(int index) {
         this.index = index;
     }
+    public byte[] getPos(){
+        List<Byte> byteList = new ArrayList<>();
+        byteList.add((byte)this.getIndex());
+        byte[] xb = float2byte(x);
+        byte[] yb = float2byte(y);
+        byte[] zb = float2byte(z);
+        String s = "";
+        for (int i =0;i<4;i++){
 
+            byteList.add(xb[i]);
+            s+= xb[i]+"<>";
+        }
+        //System.out.println(xb[0]);
+        for (int i =0;i<4;i++){
+
+            byteList.add(yb[i]);
+
+        }
+        for (int i =0;i<4;i++){
+
+            byteList.add(zb[i]);
+            s+=zb[i]+"<>";
+        }
+        byte[] reByte = new byte[byteList.size()];
+        for(int i =0;i<byteList.size();i++){
+            reByte[i] = byteList.get(i);
+
+        }
+
+        return reByte;
+
+    }
     private int index;
     public  float x;
     public  float y;

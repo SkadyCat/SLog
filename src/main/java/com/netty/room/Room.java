@@ -84,6 +84,48 @@ public class Room {
         return jsonObject.toString().getBytes();
 
     }
+
+    public static int loginNum(){
+
+        int sum = 0;
+        for (PlayerModel mod:playerModelList){
+
+            if (mod.getLoginStatu() == 1){
+
+                sum ++;
+            }
+        }
+        return sum;
+    }
+    public static byte[] getAllPosition(){
+        int loginSum = loginNum();
+        byte[] bytes = new byte[loginSum*13+1];
+        bytes[0] = 111;
+        int index = 1;
+
+        for (PlayerModel md:playerModelList
+             ) {
+
+            if (md.getLoginStatu() == 1){
+
+                byte[] posByte = md.getPos();
+                for(int i =0;i<posByte.length;i++){
+
+                    bytes[index] = posByte[i];
+
+
+                    index++;
+                }
+            }
+
+        }
+        if (bytes.length>1){
+           // System.out.println(""+bytes[1]);
+        }
+
+
+        return bytes;
+    }
     public static byte[] getAllUserInfo(){
 
         JSONObject jsonObject = new JSONObject();
@@ -132,10 +174,12 @@ public class Room {
     public  static  PlayerModel addPlayerModel(String userAcc){
 
         if (userMap.containsKey(userAcc)){
+
         }else {
             PlayerModel model = new PlayerModel(userAcc);
             model.setIndex(playerModelList.size());
             playerModelList.add(model);
+            System.out.println("添加"+model.userAcc+"的用户进入，对应id = "+model.getIndex());
             userMap.put(userAcc,model);
         }
 
