@@ -4,7 +4,9 @@ import com.netty.OPStrategy.OP_0;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,8 +16,14 @@ public class StaticResInfo {
     private static final List<StaticItem> staticItemList = new ArrayList<>();
 
 
-    public static void addItem(StaticItem item){
+    public static StaticItem addItem(StaticItem item){
+        item.index = staticItemList.size();
+        Date preTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        item.setBeginTime( formatter.format(preTime));
         staticItemList.add(item);
+
+        return item;
     }
 
     public static JSONObject getStaticJson(){

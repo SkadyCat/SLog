@@ -122,7 +122,7 @@ public class OP_0  extends SLogStrategy{
             case  addNewFarmStaticItem:
                 jsonObject = JSONObject.fromObject(data.originData);
                 StaticItem staticItem = (StaticItem) JSONObject.toBean(jsonObject,StaticItem.class);
-                StaticResInfo.addItem(staticItem);
+                staticItem =  StaticResInfo.addItem(staticItem);
                 Room.BroadCast(staticItem);
                 break;
             case 123:

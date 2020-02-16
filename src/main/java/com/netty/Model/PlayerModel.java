@@ -163,8 +163,13 @@ public class PlayerModel extends Model{
         this.addItem(ItemFactory.housePaper);
         this.addItem(ItemFactory.plant1);
         this.addItem(ItemFactory.soilItem);
-
-        StaticResInfo.addItem(new StaticItem(2001,0,0,0,this.userAcc));
+        this.addItem(ItemFactory.soilItem);
+        this.addItem(ItemFactory.soilItem);
+        this.addItem(ItemFactory.soilItem);
+        this.addItem(ItemFactory.soilItem);
+        this.addItem(ItemFactory.soilItem);
+        this.addItem(ItemFactory.soilItem);
+        //StaticResInfo.addItem(new StaticItem(2001,0,0,0,this.userAcc));
     }
 
     public JSONObject getUserInfo(){
