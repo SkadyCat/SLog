@@ -32,10 +32,9 @@ public class MonsterResInfo {
         JSONArray jsonArray = new JSONArray();
         for (int i =0;i<monsterModels.size();i++){
             //System.out.println(monsterModels.get(i).index);
-            if (random.nextInt()%4 == 0){
 
                 jsonArray.add(monsterModels.get(i).getInitInfo());
-            }
+
 
 
         }
@@ -48,7 +47,11 @@ public class MonsterResInfo {
 
         for (MonsterModel model:monsterModels
              ) {
-            model.updatePosition();
+
+            if (random.nextInt()%4 == 0){
+                model.updatePosition();
+            }
+
         }
 
     }
