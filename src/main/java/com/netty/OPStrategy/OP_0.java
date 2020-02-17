@@ -36,6 +36,7 @@ public class OP_0  extends SLogStrategy{
     public static final int addNewFarmStaticItem = 26;
 
     public static final int initMonsterRes = 30;
+    JSONObject jsonObject;
     @Override
     public void subOP(int _subCode) {
         switch (_subCode){
@@ -71,13 +72,25 @@ public class OP_0  extends SLogStrategy{
 
             case 3:
                 System.out.println("用户移除"+data.originData);
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("m",0);
-                jsonObject.put("s",20);
-                jsonObject.put("userAcc",data.originData.getString("user_acc"));
-                Room.removePlayer(data.originData.getString("user_acc"));
+                int identity = new Integer(data.originData.getString("index"));
+                Room.loginMap.put(identity,-1);
+              //  Room.BroadCast(jsonObject.toString().getBytes());
+              // if (Room.playerModelList.size()>identity){
+              //     synchronized (Room.playerModelList){
+              //
+              //         Room.playerModelList.get(identity).setLoginStatu(-1);
+              //     }
 
-                Room.BroadCast(jsonObject.toString().getBytes());
+              //     //Room.BroadCast(data.originData.toString().getBytes());
+              // }
+
+             //JSONObject jsonObject = new JSONObject();
+             //jsonObject.put("m",0);
+             //jsonObject.put("s",20);
+             //jsonObject.put("userAcc",data.originData.getString("user_acc"));
+             //Room.removePlayer(data.originData.getString("user_acc"));
+
+
 
                 break;
 
@@ -127,6 +140,11 @@ public class OP_0  extends SLogStrategy{
                 StaticItem staticItem = (StaticItem) JSONObject.toBean(jsonObject,StaticItem.class);
                 staticItem =  StaticResInfo.addItem(staticItem);
                 Room.BroadCast(staticItem);
+                break;
+
+            case 99:
+                System.out.println(data.originData.toString());
+               // Room.removePlayer(data.originData.getString("user_acc"));
                 break;
             case 123:
 //                System.out.println(data.strContent);

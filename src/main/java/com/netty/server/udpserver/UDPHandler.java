@@ -201,7 +201,7 @@ public class UDPHandler extends
 
 //            System.out.println(xv);
             Room.playerModelList.get(data[1]).setDir(floatList[0],floatList[1],floatList[2]);
-
+            //System.out.println(data[1]+"<>"+floatList[0]+"<>"+Room.playerModelList.get(data[1]).getPositionInfo()+"<>"+Room.playerModelList.get(data[1]).getLoginStatu());
 
         }
 

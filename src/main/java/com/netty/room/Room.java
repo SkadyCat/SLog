@@ -6,9 +6,12 @@ import com.netty.Model.UserModel;
 import com.netty.role.STimer;
 import com.netty.server.udpserver.UDPServer;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import com.sun.xml.internal.fastinfoset.algorithm.IntEncodingAlgorithm;
+import jdk.nashorn.internal.runtime.Debug;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.xml.datatype.Duration;
 import java.io.UnsupportedEncodingException;
@@ -170,17 +173,21 @@ public class Room {
 
     }
 
-    public static List<PlayerModel> playerModelList = new ArrayList<>();
+    public  static  List<PlayerModel>  playerModelList = new ArrayList<>();
+
+    public static final HashMap<Integer,Integer> loginMap = new HashMap<>();
     public  static  PlayerModel addPlayerModel(String userAcc){
 
         if (userMap.containsKey(userAcc)){
-
+            loginMap.put(userMap.get(userAcc).getIndex(),1);
         }else {
             PlayerModel model = new PlayerModel(userAcc);
             model.setIndex(playerModelList.size());
+            loginMap.put(model.getIndex(),1);
             playerModelList.add(model);
             System.out.println("添加"+model.userAcc+"的用户进入，对应id = "+model.getIndex());
             userMap.put(userAcc,model);
+
         }
 
         userMap.get(userAcc).setLoginStatu(1);
@@ -285,8 +292,8 @@ public class Room {
        // System.out.println(userMap.size()+"广播内容："+new String(value));
         for (PlayerModel model : userMap.values()){
 
-            if (model.getLoginStatu() == 1){
-
+            if (loginMap.get(model.getIndex()) == 1){
+                //System.out.println("广播对象："+model.userAcc);
                 UDPServer.send(value,model.sender);
             }
 
