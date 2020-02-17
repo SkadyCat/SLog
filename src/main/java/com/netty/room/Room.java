@@ -137,11 +137,27 @@ public class Room {
 
         JSONArray jsonArray = new JSONArray();
 
-        for (String key : userMap.keySet()){
+      // for (String key : userMap.keySet()){
 
-            if (userMap.get(key).getLoginStatu() == 1){
+      //     if (userMap.get(key).getLoginStatu() == 1){
 
-                JSONObject jsonObject2 = userMap.get(key).getUserInfo();
+      //         JSONObject jsonObject2 = userMap.get(key).getUserInfo();
+
+      //         if (jsonObject2.get("userAcc")!= null){
+
+      //             jsonArray.add(jsonObject2);
+      //             //  System.out.println(jsonObject2.toString());
+      //         }
+
+      //     }
+
+
+      // }
+        for (PlayerModel md : playerModelList){
+
+            if (loginMap.get(md.getIndex()) == 1){
+
+                JSONObject jsonObject2 = md.getUserInfo();
 
                 if (jsonObject2.get("userAcc")!= null){
 
@@ -179,6 +195,7 @@ public class Room {
     public  static  PlayerModel addPlayerModel(String userAcc){
 
         if (userMap.containsKey(userAcc)){
+
             loginMap.put(userMap.get(userAcc).getIndex(),1);
         }else {
             PlayerModel model = new PlayerModel(userAcc);
@@ -290,12 +307,15 @@ public class Room {
     }
     public static void BroadCast(byte[] value){
        // System.out.println(userMap.size()+"广播内容："+new String(value));
-        for (PlayerModel model : userMap.values()){
+        for (PlayerModel model : playerModelList){
+            if (loginMap.containsKey(model.getIndex())){
+                if (loginMap.get(model.getIndex()) == 1){
+                   // System.out.println("广播对象："+model.userAcc+"<>"+value[0]+"<>"+model.getIndex()+"<>"+model.sender.toString());
+                    UDPServer.send(value,model.sender);
+                }
 
-            if (loginMap.get(model.getIndex()) == 1){
-                //System.out.println("广播对象："+model.userAcc);
-                UDPServer.send(value,model.sender);
             }
+
 
 
         }

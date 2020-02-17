@@ -179,9 +179,9 @@ public class PlayerModel extends Model{
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("userAcc",userAcc);
-        jsonObject.put("x",x);
-        jsonObject.put("y",y);
-        jsonObject.put("z",z);
+       // jsonObject.put("x",x);
+       // jsonObject.put("y",y);
+       // jsonObject.put("z",z);
         jsonObject.put("index",index);
         return jsonObject;
 
