@@ -207,47 +207,47 @@ public class Room {
 
     public static void detectDeadConnect(){
 
-        Date date = new Date();
-        JSONArray jsonArray = new JSONArray();
-        List<String> deadList = new ArrayList<>();
-        for(PlayerModel md:userMap.values()
-             ) {
+      // Date date = new Date();
+      // JSONArray jsonArray = new JSONArray();
+      // List<String> deadList = new ArrayList<>();
+      // for(PlayerModel md:userMap.values()
+      //      ) {
 
-            long diff = date.getTime() - md.headTime.getTime();
-            float sValue = diff/1000;
+      //     long diff = date.getTime() - md.headTime.getTime();
+      //     float sValue = diff/1000;
 
-//            System.out.println(md.userAcc+"有那么多时间没理我了："+sValue);
-            if (sValue>30)
-            {
-//                System.out.println(md.userAcc+"是僵尸号"+sValue);
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("userAcc",md.userAcc);
-                jsonArray.add(jsonObject);
-                deadList.add(md.userAcc);
+//    //       System.out.println(md.userAcc+"有那么多时间没理我了："+sValue);
+      //     if (sValue>30)
+      //     {
+//    //           System.out.println(md.userAcc+"是僵尸号"+sValue);
+      //         JSONObject jsonObject = new JSONObject();
+      //         jsonObject.put("userAcc",md.userAcc);
+      //         jsonArray.add(jsonObject);
+      //         deadList.add(md.userAcc);
 
-            }
-            if (jsonArray.size()>0){
+      //     }
+      //     if (jsonArray.size()>0){
 
-                JSONObject jsonObject = new JSONObject();
-
-
-                jsonObject.put("m",0);
-                jsonObject.put("s",201);
-                jsonObject.put("value",jsonArray.toString());
-                BroadCast(jsonObject.toString().getBytes());
+      //         JSONObject jsonObject = new JSONObject();
 
 
-            }
+      //         jsonObject.put("m",0);
+      //         jsonObject.put("s",201);
+      //         jsonObject.put("value",jsonArray.toString());
+      //         BroadCast(jsonObject.toString().getBytes());
+
+
+      //     }
 
 
 
-        }
-        for (String key:deadList
-        ) {
-            STimer.removeUser(userMap.get(key).sender);
-            userMap.get(key).setLoginStatu(-1);
+      // }
+      // for (String key:deadList
+      // ) {
+      //     STimer.removeUser(userMap.get(key).sender);
+      //     userMap.get(key).setLoginStatu(-1);
 
-        }
+      // }
 
     }
     public static void removeDeadConnect(){
