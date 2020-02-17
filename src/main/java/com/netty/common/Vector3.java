@@ -48,7 +48,13 @@ public class Vector3 {
         this.z = random.nextFloat()- 0.5f;
         return this;
     }
+    public Vector3 random(float bs){
 
+        this.x = (random.nextFloat() - 0.5f)*bs;
+        this.y = 0;
+        this.z = (random.nextFloat() - 0.5f)*bs;
+        return this;
+    }
     public float sqrt(float v){
 
         return (float) Math.sqrt(v);

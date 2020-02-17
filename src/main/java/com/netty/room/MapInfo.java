@@ -1,12 +1,12 @@
 package com.netty.room;
 
 import com.netty.OPStrategy.OP_0;
-import com.netty.role.RoleMap;
+import com.netty.common.Vector3;
 import com.netty.role.STimer;
-import com.netty.room.map.MonsterInfo;
+import com.netty.room.map.MonsterModel;
+import com.netty.room.map.MonsterResInfo;
 import com.netty.view.IViewer;
 import com.netty.view.ViewInfo;
-import com.sun.org.apache.regexp.internal.RE;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -21,8 +21,9 @@ public class MapInfo implements IViewer {
 
         System.out.println("mapInit");
         initMonsterInfo();
+        MonsterResInfo.init();
         int index = 0;
-        for (MonsterInfo info:monsterInfoList.values()
+        for (MonsterModel info:monsterInfoList.values()
              ) {
             info.updatePosition();
             info.setId(index+"");
@@ -32,16 +33,16 @@ public class MapInfo implements IViewer {
         STimer.Instance.addViewer(Instance);
 
     }
-    private  static HashMap<String,MonsterInfo> monsterInfoList = new HashMap<>();
+    private  static HashMap<String, MonsterModel> monsterInfoList = new HashMap<>();
 
 
     public static  void  initMonsterInfo(){
         for (int i = 0;i<30;i++){
-            MonsterInfo monsterInfo = new MonsterInfo(i+"");
+            MonsterModel monsterModel = new MonsterModel(i+"");
 
-            monsterInfo.init();
+            monsterModel.init();
            // System.out.println(monsterInfo.statuInfo.getId());
-            monsterInfoList.put(monsterInfo.statuInfo.getId(),monsterInfo);
+            monsterInfoList.put(monsterModel.statuInfo.getId(), monsterModel);
 
         }
     }
@@ -61,7 +62,7 @@ public class MapInfo implements IViewer {
         jsonObject.put("s",6);
         JSONArray jsonArray = new JSONArray();
 
-        for (MonsterInfo info : monsterInfoList.values()){
+        for (MonsterModel info : monsterInfoList.values()){
 
             if (random.nextInt()%4 == 0) {
 
@@ -82,7 +83,7 @@ public class MapInfo implements IViewer {
         jsonObject.put("s",9);
         JSONArray jsonArray = new JSONArray();
         System.out.println("生成所有信息");
-        for (MonsterInfo info : monsterInfoList.values()){
+        for (MonsterModel info : monsterInfoList.values()){
 
             jsonArray.add(info.getMonsterPosInfo());
         }
@@ -102,8 +103,26 @@ public class MapInfo implements IViewer {
         System.out.println("死亡对象："+monsterID);
         STimer.UDPBroadCast(jsonObject.toString().getBytes());
     }
+
+    public static void dead(int index){
+
+
+
+        MonsterResInfo.monsterModels.get(index).position.add(new Vector3(100,0,100));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",8);
+        jsonObject.put("index",index);
+        jsonObject.put("x",MonsterResInfo.monsterModels.get(index).position.x);
+        jsonObject.put("z",MonsterResInfo.monsterModels.get(index).position.z);
+
+
+        MonsterResInfo.monsterModels.get(index).statuInfo.setHp(MonsterResInfo.monsterModels.get(index).statuInfo.getMaxhp());
+
+         Room.BroadCast(jsonObject.toString().getBytes());
+    }
     public static void deHp(String monsterID,int hp){
-        MonsterInfo info =  monsterInfoList.get(monsterID);
+        MonsterModel info =  monsterInfoList.get(monsterID);
         if (info == null){
 
             System.out.println("monster为空！"+monsterID);
@@ -114,12 +133,33 @@ public class MapInfo implements IViewer {
 
 
        if (deadStatu == true){
-           dead(monsterID);
+          // dead(monsterID);
        }else {
            JSONObject jsonObject = info.statuInfo.getJson();
            STimer.UDPBroadCast(getMonsterStatuInfo(jsonObject).toString().getBytes());
 
        }
+
+    }
+
+    public static void deHp(int monsterID,int hp){
+        MonsterModel info =  MonsterResInfo.monsterModels.get(monsterID);
+        if (info == null){
+
+            System.out.println("monster为空！"+monsterID);
+            return;
+        }
+
+        boolean deadStatu = info.statuInfo.dehp(hp);
+
+
+        if (deadStatu == true){
+            dead(monsterID);
+        }else {
+            JSONObject jsonObject = info.statuInfo.getJson();
+            STimer.UDPBroadCast(info.getStatuInfo().toString().getBytes());
+
+        }
 
     }
     public static JSONObject getMonsterStatuInfo(JSONObject jv){
@@ -157,16 +197,11 @@ public class MapInfo implements IViewer {
 
                 if (tim1%100 == 0){
 
-                   // STimer.UDPBroadCast();
-//                    System.out.println("广播怪物位置"+monsterInfo().toString());
-
-
-                        STimer.addBroadCastInfo(monsterPosInfo().toString().getBytes());
-
-
-
+                    MonsterResInfo.updatePosition();
+                    Room.BroadCast(MonsterResInfo.getMonsterPosition());
                 }
-               // if (tim1 == 400){
+
+                // if (tim1 == 400){
                //     for (MonsterInfo i2:monsterInfoList.values()
                //     ) {
                //         i2.updateDir();

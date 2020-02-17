@@ -3,7 +3,7 @@ package com.netty.item;
 import net.sf.json.JSONObject;
 import org.omg.CORBA.PRIVATE_MEMBER;
 
-public abstract class Item {
+public class Item {
 
     private int num;
 
@@ -56,7 +56,10 @@ public abstract class Item {
     private String item_name;
     private String describe;
 
-    public abstract void init();
+    public void init(){
+
+
+    }
 
     public static JSONObject getJSON(Item item){
 

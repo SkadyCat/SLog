@@ -5,12 +5,80 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
-public class MonsterInfo extends MapBaseInfo {
+public class MonsterModel extends MapBaseInfo {
     public String monsterID;
     public Vector3 position;
     public Vector3 dir;
     public StatuInfo statuInfo;
-    public MonsterInfo(){
+    public int type;
+    public int index;
+    public static byte[] float2byte(float f) {
+
+        // 把float转换为byte[]
+        int fbit = Float.floatToIntBits(f);
+
+        byte[] b = new byte[4];
+        for (int i = 0; i < 4; i++) {
+            b[i] = (byte) (fbit >> ( i * 8));
+        }
+
+        //// 翻转数组
+        //int len = b.length;
+        //// 建立一个与源数组元素类型相同的数组
+        //byte[] dest = new byte[len];
+        //// 为了防止修改源数组，将源数组拷贝一份副本
+        //System.arraycopy(b, 0, dest, 0, len);
+        //byte temp;
+        //// 将顺位第i个与倒数第i个交换
+        //for (int i = 0; i < len / 2; ++i) {
+        //    temp = dest[i];
+        //    dest[i] = dest[len - i - 1];
+        //    dest[len - i - 1] = temp;
+        //}
+
+        return b;
+
+    }
+
+    public JSONObject getStatuInfo(){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",7);
+        jsonObject.put("index",index);
+        jsonObject.put("hp",statuInfo.getHp());
+        jsonObject.put("maxhp",statuInfo.getMaxhp());
+        return jsonObject;
+    }
+    public JSONObject getInitInfo(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("index",index);
+        jsonObject.put("x",position.x);
+        jsonObject.put("z",position.z);
+        jsonObject.put("type",type);
+        return jsonObject;
+
+    }
+    public byte[] getPosition(){
+
+        byte[] byteList = new byte[8];
+
+        byte[] xb = float2byte(position.x);
+        byte[] zb = float2byte(position.z);
+        for (int i =0;i<4;i++){
+
+            byteList[i] = xb[i];
+
+        }
+        for(int i = 0;i<4;i++){
+
+            byteList[i+4] = zb[i];
+        }
+        return byteList;
+
+
+    }
+    public MonsterModel(){
 
         statuInfo = new StatuInfo();
 
@@ -18,7 +86,7 @@ public class MonsterInfo extends MapBaseInfo {
         statuInfo.setMaxhp(100);
         statuInfo.setAgi(10);
     }
-    public MonsterInfo(String id){
+    public MonsterModel(String id){
 
         statuInfo = new StatuInfo();
 

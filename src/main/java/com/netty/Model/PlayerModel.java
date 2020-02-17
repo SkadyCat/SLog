@@ -169,6 +169,9 @@ public class PlayerModel extends Model{
         this.addItem(ItemFactory.soilItem);
         this.addItem(ItemFactory.soilItem);
         this.addItem(ItemFactory.soilItem);
+        this.addItem(2002);
+        this.addItem(2003);
+        this.addItem(2004);
         //StaticResInfo.addItem(new StaticItem(2001,0,0,0,this.userAcc));
     }
 

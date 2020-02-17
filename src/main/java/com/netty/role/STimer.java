@@ -4,6 +4,7 @@ package com.netty.role;
 import com.netty.Model.UserModel;
 import com.netty.room.MapInfo;
 import com.netty.room.Room;
+import com.netty.room.map.MonsterResInfo;
 import com.netty.server.DataModel;
 import com.netty.server.NettyHandler;
 import com.netty.server.udpserver.UDPHandler;
@@ -88,16 +89,9 @@ public class STimer extends TimerTask implements IOBViewer {
             Room.updatePosition();
 
             Room.BroadCast(Room.getAllPosition());
+
             String st = random.nextInt()+"";
-           // System.out.println(new String(Room.getAllPlayerPosition()));
-//            for (InetSocketAddress key :list){
-//
-//                UDPServer.handler.context.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(), key));
-//
-//            }
 
-
-            //sendInfo.offer(Room.getAllPlayerPosition());
             while (!sendInfo.isEmpty()){
 
                 UDPBroadCast(sendInfo.poll());

@@ -9,6 +9,7 @@ import com.netty.role.STimer;
 import com.netty.room.MapInfo;
 import com.netty.room.Room;
 import com.netty.room.farminfo.FarmInfoFactory;
+import com.netty.room.map.MonsterResInfo;
 import com.netty.room.map.StaticItem;
 import com.netty.room.map.StaticResInfo;
 import com.netty.server.DataModel;
@@ -34,6 +35,7 @@ public class OP_0  extends SLogStrategy{
     public static final int initStaticRes = 25;
     public static final int addNewFarmStaticItem = 26;
 
+    public static final int initMonsterRes = 30;
     @Override
     public void subOP(int _subCode) {
         switch (_subCode){
@@ -46,9 +48,10 @@ public class OP_0  extends SLogStrategy{
                 playerModel =  Room.addPlayerModel(model.user_acc);
                 playerModel.sender = sender;
                 Room.BroadCast(Room.getAllUserInfo());
-                Room.BroadCast(MapInfo.monsterBornInfo().toString().getBytes());
+              //  Room.BroadCast(MapInfo.monsterBornInfo().toString().getBytes());
                 Room.BroadCast(FarmInfoFactory.FarmAllInfo().toString().getBytes());
                 Room.BroadCast(StaticResInfo.getStaticJson().toString().getBytes());
+                Room.singleSend(sender,MonsterResInfo.getInitInfo().toString().getBytes());
                 Room.singleSend(sender,playerModel.getBagInfo());
 
                 break;
@@ -85,7 +88,7 @@ public class OP_0  extends SLogStrategy{
                 break;
 
             case updateMonsterHp:
-                 String monsterId =  data.originData.getString("userAcc");
+                 int monsterId =  new Integer(data.originData.getString("index"));
                  int deHpValue = data.originData.getInt("value");
 
                  System.out.println(data.originData.toString());

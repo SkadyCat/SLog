@@ -19,23 +19,26 @@ public class ItemFactory {
 
     public static Item factory(int id){
 
+        Item item = new Item();
+        item.setId(id);
 
-        switch (id){
-            case housePaper:
+        return item;
+      // switch (id){
+      //     case housePaper:
 
-                return new HousePaper();
-            case plant1:
-                return new Plant1();
+      //         return new HousePaper();
+      //     case plant1:
+      //         return new Plant1();
 
-            case soilItem:
+      //     case soilItem:
 
 
-                return new SoilItem();
-            default:
-                break;
+      //         return new SoilItem();
+      //     default:
+      //         break;
 
-        }
+      // }
 
-        return null;
+      // return null;
     }
 }
