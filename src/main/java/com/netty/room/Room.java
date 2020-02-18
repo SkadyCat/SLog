@@ -204,7 +204,7 @@ public class Room {
             playerModelList.add(model);
             System.out.println("添加"+model.userAcc+"的用户进入，对应id = "+model.getIndex());
             userMap.put(userAcc,model);
-
+            model.headTime = new Date();
         }
 
         userMap.get(userAcc).setLoginStatu(1);
@@ -230,6 +230,22 @@ public class Room {
     }
 
     public static void detectDeadConnect(){
+        Date date = new Date();
+        for (PlayerModel md : playerModelList){
+            long diff = date.getTime() - md.headTime.getTime();
+            float sValue = diff/1000;
+
+            if ( loginMap.get(md.getIndex()) == -1){
+
+                continue;
+            }
+            if (sValue>20){
+
+                loginMap.put(md.getIndex(),-1) ;
+                System.out.println("检测到用户失联"+md.getIndex());
+            }
+        }
+
 
       // Date date = new Date();
       // JSONArray jsonArray = new JSONArray();

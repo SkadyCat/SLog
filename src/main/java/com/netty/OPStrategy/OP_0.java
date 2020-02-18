@@ -222,8 +222,9 @@ public class OP_0  extends SLogStrategy{
                 //playerModel.setHeadJumpType(100);
                 // System.out.println(playerModel.userAcc + "该角色有反馈！");
 
-                    Room.getUserModel((data.originData.getString("user_acc"))).headTime = new Date();
-                   break;
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+                playerModel.headTime = new Date();
+                break;
         }
     }
 }
