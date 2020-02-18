@@ -29,7 +29,19 @@ public class PlayerModel extends Model{
     }
     public void changeItemNum(int id,int num){
 
-        this.itemMap.get(id).setNum(this.itemMap.get(id).getNum() - num);
+        System.out.println("出售id = "+id+"出售数量+"+num+"剩余数量+"+this.itemMap.get(id).getNum());
+
+        if (this.itemMap.get(id).getNum()>=num){
+
+            this.itemMap.get(id).setNum(this.itemMap.get(id).getNum() - num);
+        }
+
+        if (this.itemMap.get(id).getNum() <= 0){
+
+            this.itemMap.get(id).setNum(0);
+
+        }
+
     }
     public List<Integer> stealList = new ArrayList<>();
     public int changeItemNum(int id,int num,int type,int staticIndex){
