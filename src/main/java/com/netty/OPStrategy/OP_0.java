@@ -16,6 +16,7 @@ import com.netty.server.DataModel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import jdk.nashorn.internal.runtime.Debug;
 import net.sf.json.JSON;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.net.InetSocketAddress;
@@ -36,7 +37,17 @@ public class OP_0  extends SLogStrategy{
     public static final int addNewFarmStaticItem = 26;
 
     public static final int initMonsterRes = 30;
+    public static  final int initUserInfo = 40;
+    public static final int update_t_score = 41;
+    public static final int shopOp = 42;
+    public static final int shopReturnFail = 43;
+    public static final int shopReturnSuccess = 44;
+    public static final int shopCorp = 45;
+    public static final int cropRipe = 50;
+    public static final int stealCrop = 51;
     JSONObject jsonObject;
+
+
     @Override
     public void subOP(int _subCode) {
         switch (_subCode){
@@ -45,7 +56,6 @@ public class OP_0  extends SLogStrategy{
                 LoginModel model = (LoginModel) JSONObject.toBean(data.originData,LoginModel.class);
 
                 System.out.println(model.user_acc+"<>"+model.user_pwd);
-
                 playerModel =  Room.addPlayerModel(model.user_acc);
                 playerModel.sender = sender;
                 Room.BroadCast(Room.getAllUserInfo());
@@ -54,7 +64,7 @@ public class OP_0  extends SLogStrategy{
                 Room.BroadCast(StaticResInfo.getStaticJson().toString().getBytes());
                 Room.singleSend(sender,MonsterResInfo.getInitInfo().toString().getBytes());
                 Room.singleSend(sender,playerModel.getBagInfo());
-
+                Room.singleSend(sender,playerModel.getUserStatuInfo());
                 break;
             case 1:
 
@@ -127,7 +137,7 @@ public class OP_0  extends SLogStrategy{
 
                 break;
             case  userItem:
-                System.out.println(data.originData);
+               // System.out.println(data.originData);
                 jsonObject = JSONObject.fromObject(data.originData);
                 UserItemModel userItemModel = (UserItemModel) JSONObject.toBean(jsonObject,UserItemModel.class);
                 playerModel = Room.getUserModel(userItemModel.getUserAcc());
@@ -142,8 +152,63 @@ public class OP_0  extends SLogStrategy{
                 Room.BroadCast(staticItem);
                 break;
 
+            case  shopOp:
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+
+                boolean shopOpStatu = playerModel.shop(
+                        new Integer(data.originData.getString("purchValue")),
+                        new Integer(data.originData.getString("id"))
+                        );
+
+                if (shopOpStatu == true){
+
+                    jsonObject = new JSONObject();
+                    jsonObject.put("m",0);
+                    jsonObject.put("s",update_t_score);
+                    jsonObject.put("t",playerModel.tscore);
+                    Room.singleSend(sender,jsonObject);
+                    Room.singleSend(sender,playerModel.getBagInfo());
+                }
+
+                break;
+            case  45:
+                jsonObject = JSONObject.fromObject(data.originData);
+                JSONArray jsonArray = JSONArray.fromObject(jsonObject.getString("value"));
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+                for (int i =0;i<jsonArray.size();i++
+                     ) {
+                   JSONObject j3 = jsonArray.getJSONObject(i);
+
+                   playerModel.changeItemNum(j3.getInt("id"),j3.getInt("num"));
+
+                }
+                playerModel.tscore += jsonObject.getInt("allValue");
+                jsonObject = new JSONObject();
+                jsonObject.put("m",0);
+                jsonObject.put("s",update_t_score);
+                jsonObject.put("t",playerModel.tscore);
+                Room.singleSend(sender,jsonObject);
+                break;
+
+            case  cropRipe:
+
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+
+                int staticIndex = data.originData.getInt("staticIndex");
+                int cropType = data.originData.getInt("type");
+                int cropID =  data.originData.getInt("id");
+                int changeNum = playerModel.changeItemNum(cropID,0,cropType,staticIndex);
+
+                if (cropType == 1){
+
+                    StaticResInfo.deleteStaticItem(staticIndex,changeNum);
+
+                }
+
+                break;
+
             case 99:
-                System.out.println(data.originData.toString());
+
                // Room.removePlayer(data.originData.getString("user_acc"));
                 break;
             case 123:

@@ -12,6 +12,7 @@ public class StaticItem extends SendData {
     float x;
     float y;
     float z;
+
     String beginTime;
 
     String userAcc;

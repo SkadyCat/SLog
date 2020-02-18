@@ -1,9 +1,11 @@
 package com.netty.Model;
 
+import com.netty.OPStrategy.OP_0;
 import com.netty.common.Vector3;
 import com.netty.item.Item;
 import com.netty.item.ItemFactory;
 import com.netty.item.crop.plant.Plant1;
+import com.netty.room.Room;
 import com.netty.room.farminfo.FarmInfoFactory;
 import com.netty.room.map.StaticItem;
 import com.netty.room.map.StaticResInfo;
@@ -12,13 +14,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PlayerModel extends Model{
-
+    public static Random random = new Random();
     private int loginStatu = -1;
 
     public int getLoginStatu() {
@@ -28,7 +27,66 @@ public class PlayerModel extends Model{
     public void setLoginStatu(int loginStatu) {
         this.loginStatu = loginStatu;
     }
+    public void changeItemNum(int id,int num){
 
+        this.itemMap.get(id).setNum(this.itemMap.get(id).getNum() - num);
+    }
+    public List<Integer> stealList = new ArrayList<>();
+    public int changeItemNum(int id,int num,int type,int staticIndex){
+
+        System.out.println("偷窃对象："+staticIndex);
+        int tnum = 0;
+        switch (type){
+
+            case 1:
+                tnum = Math.abs(random.nextInt()%30)+20;
+                this.itemMap.get(id).setNum(this.itemMap.get(id).getNum()+tnum);
+                break;
+
+            case 0:
+                if (!stealList.contains(staticIndex)){
+
+                    stealList.add(staticIndex);
+                    tnum = Math.abs(random.nextInt()%10);
+                    this.itemMap.get(id).setNum(this.itemMap.get(id).getNum()+tnum);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("m",0);
+                    jsonObject.put("s",52);
+                    jsonObject.put("id",id);
+                    jsonObject.put("num",tnum);
+                    Room.singleSend(sender,jsonObject);
+                }else {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("m",0);
+                    jsonObject.put("s",53);
+                    jsonObject.put("id",id);
+
+                    Room.singleSend(sender,jsonObject);
+
+                }
+
+                break;
+        }
+
+        Room.singleSend(sender,this.getBagInfo());
+
+        return tnum;
+    }
+    public boolean shop(int value,int id){
+
+        if (this.tscore<value){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("m",0);
+            jsonObject.put("s",OP_0.shopReturnFail);
+
+            Room.singleSend(this.sender,jsonObject);
+            return false;
+        }
+        this.addItem(id);
+        this.tscore -= value;
+        return true;
+    }
     public static byte[] float2byte(float f) {
 
         // 把float转换为byte[]
@@ -97,11 +155,24 @@ public class PlayerModel extends Model{
         return reByte;
 
     }
+
+    public JSONObject getUserStatuInfo(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s", OP_0.initUserInfo);
+        jsonObject.put("t",tscore);
+
+        return jsonObject;
+
+    }
     private int index;
     public  float x;
     public  float y;
     public  float z;
     public  float yr;
+    public int tscore;
+
+
     public Vector3 dir = new Vector3();
     public Date headTime = new Date();
     public boolean  useItem(int id){
@@ -160,6 +231,7 @@ public class PlayerModel extends Model{
     }
     public void  initPlayerRes(){
 
+        this.tscore = 297;
         this.addItem(ItemFactory.housePaper);
         this.addItem(ItemFactory.plant1);
         this.addItem(ItemFactory.soilItem);
@@ -172,6 +244,11 @@ public class PlayerModel extends Model{
         this.addItem(2002);
         this.addItem(2003);
         this.addItem(2004);
+
+        this.addItem(3001);
+        this.addItem(3002);
+        this.addItem(3003);
+        this.addItem(3004);
         //StaticResInfo.addItem(new StaticItem(2001,0,0,0,this.userAcc));
     }
 

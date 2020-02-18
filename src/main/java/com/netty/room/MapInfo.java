@@ -19,6 +19,7 @@ public class MapInfo implements IViewer {
 
     public static void mapInit(){
 
+
         System.out.println("mapInit");
         initMonsterInfo();
         MonsterResInfo.init();
@@ -48,7 +49,7 @@ public class MapInfo implements IViewer {
     }
 
     public static void sOut(){
-        System.out.println("一次Sout---------------------");
+
         for (int i = 0;i<30;i++){
 
             System.out.println(monsterInfoList.get(i).getMonsterPosInfo());
@@ -125,7 +126,10 @@ public class MapInfo implements IViewer {
         MonsterModel info =  monsterInfoList.get(monsterID);
         if (info == null){
 
-            System.out.println("monster为空！"+monsterID);
+
+
+
+
             return;
         }
 
