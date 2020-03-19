@@ -2,6 +2,7 @@ package com.netty.Model;
 
 import com.netty.OPStrategy.OP_0;
 import com.netty.common.Vector3;
+import com.netty.item.Card;
 import com.netty.item.Item;
 import com.netty.item.ItemFactory;
 import com.netty.item.crop.plant.Plant1;
@@ -9,11 +10,15 @@ import com.netty.room.Room;
 import com.netty.room.farminfo.FarmInfoFactory;
 import com.netty.room.map.StaticItem;
 import com.netty.room.map.StaticResInfo;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import com.sun.org.apache.xpath.internal.axes.HasPositionalPredChecker;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.awt.font.TextHitInfo;
 import java.net.InetSocketAddress;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PlayerModel extends Model{
@@ -23,7 +28,10 @@ public class PlayerModel extends Model{
     public int getLoginStatu() {
         return loginStatu;
     }
+    public Vector3 getPosition(){
 
+        return new Vector3(x,y,z);
+    }
     public void setLoginStatu(int loginStatu) {
         this.loginStatu = loginStatu;
     }
@@ -43,7 +51,13 @@ public class PlayerModel extends Model{
         }
 
     }
+    public List<Card> cardList = new ArrayList<>();
     public List<Integer> stealList = new ArrayList<>();
+    public List<TaskItem> taskList = new ArrayList<>();
+    public HashMap<Integer,TaskItem>  petMap =new HashMap<>();
+    public int Counter = 0;
+    public int pokeBallNum;
+
     public int changeItemNum(int id,int num,int type,int staticIndex){
 
         System.out.println("偷窃对象："+staticIndex);
@@ -127,11 +141,20 @@ public class PlayerModel extends Model{
 
     }
     public String userAcc = "";
-
+    public int pvpHp;
     public int getIndex() {
         return index;
     }
 
+    public JSONObject getRealWorldUpdateInfo(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",84);
+        jsonObject.put("tscore",tscore);
+        jsonObject.put("pokeball",pokeBallNum);
+
+        return jsonObject;
+    }
     public void setIndex(int index) {
         this.index = index;
     }
@@ -168,11 +191,19 @@ public class PlayerModel extends Model{
 
     }
 
+    public JSONObject getPVPInfo(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("index",this.index);
+        jsonObject.put("userAcc",this.userAcc);
+        return jsonObject;
+
+    }
     public JSONObject getUserStatuInfo(){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("m",0);
         jsonObject.put("s", OP_0.initUserInfo);
         jsonObject.put("t",tscore);
+        jsonObject.put("index",this.index);
 
         return jsonObject;
 
@@ -187,6 +218,7 @@ public class PlayerModel extends Model{
 
     public Vector3 dir = new Vector3();
     public Date headTime = new Date();
+    public String taskBeginTime = "";
     public boolean  useItem(int id){
         if (itemMap.containsKey(id)){
             itemMap.get(id).useNum();
@@ -206,6 +238,50 @@ public class PlayerModel extends Model{
             return;
         }
         itemMap.put(id, ItemFactory.factory(id));
+
+    }
+
+    public JSONObject getPokeBallNum(){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",OP_0.initPokeBall);
+        jsonObject.put("value",pokeBallNum);
+        jsonObject.put("tscore",tscore);
+        return jsonObject;
+    }
+
+    public JSONObject usePokeBall(){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",OP_0.usePokeBall);
+        if (this.pokeBallNum <= 0){
+
+            jsonObject.put("value","none");
+        }else {
+        this.pokeBallNum-=1;
+            jsonObject.put("value",this.pokeBallNum);
+        }
+
+
+        return jsonObject;
+
+    }
+    public JSONObject getMonsterInfo(){
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("m",1);
+        jsonObject.put("s",0);
+        JSONArray jsonArray = new JSONArray();
+        for (int i =0;i<cardList.size();i++){
+
+            jsonArray.add(jsonObject.fromObject(cardList.get(i)));
+
+        }
+        jsonObject.put("value",jsonArray);
+
+        return jsonObject;
 
     }
     public JSONObject getBagInfo(){
@@ -261,9 +337,141 @@ public class PlayerModel extends Model{
         this.addItem(3002);
         this.addItem(3003);
         this.addItem(3004);
+
+        updateTask();
+        this.pokeBallNum = 20;
         //StaticResInfo.addItem(new StaticItem(2001,0,0,0,this.userAcc));
     }
+    public JSONObject counterTask(){
 
+        JSONObject jsonObject = new JSONObject();
+        HashMap<Integer,TaskItem> taskItems = new HashMap<>();
+
+        for (TaskItem item:petMap.values()
+             ) {
+            TaskItem Titem = new TaskItem();
+            Titem.setNum(item.getNum());
+            Titem.setId(item.getId());
+            taskItems.put(Titem.getId(),Titem);
+        }
+
+        for (TaskItem item:taskList
+             ) {
+            if (!taskItems.containsKey(item.getId())){
+
+                jsonObject.put("m",0);
+                jsonObject.put("s",OP_0.counterTask);
+                jsonObject.put("value","-1");
+                return jsonObject;
+            }
+            int rest =  taskItems.get(item.getId()).getNum() - item.getNum();
+
+            if (rest<0){
+                jsonObject.put("m",0);
+                jsonObject.put("s",OP_0.counterTask);
+                jsonObject.put("value","-1");
+                return jsonObject;
+            }
+        }
+        for (TaskItem item:taskList
+        ) {
+            int rest =  petMap.get(item.getId()).getNum() - item.getNum();
+            petMap.get(item.getId()).setNum(rest);
+        }
+        Room.singleSend(sender,getPetInfo());
+
+        this.tscore += Counter;
+        Room.singleSend(sender,getUserStatuInfo().toString().getBytes());
+        jsonObject.put("m",0);
+        jsonObject.put("s",OP_0.counterTask);
+        jsonObject.put("value","1");
+        return jsonObject;
+
+
+
+    }
+    public void  addPet(int id,int num){
+
+        if (petMap.containsKey(id)){
+            petMap.get(id).setNum(petMap.get(id).getNum()+num);
+        }
+        else {
+            TaskItem item = new TaskItem();
+            item.setId(id);
+            petMap.put(id, item);
+            petMap.get(id).setNum(num);
+        }
+    }
+    public JSONObject addPet(int id){
+
+        JSONObject jsonObject = new JSONObject();
+        if (petMap.containsKey(id)){
+
+            petMap.get(id).setNum(petMap.get(id).getNum()+1);
+
+        }else {
+
+            petMap.put(id,new TaskItem());
+            petMap.get(id).setNum(1);
+        }
+        jsonObject.put("m",0);
+        jsonObject.put("s",OP_0.addNewPet);
+        jsonObject.put("id",id);
+        jsonObject.put("num",petMap.get(id).getNum());
+        return jsonObject;
+
+    }
+    public void  updateTask(){
+
+        taskList.clear();
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        taskBeginTime = df.format(day);
+
+        for (int i =0;i<5;i++){
+
+            TaskItem taskItem = new TaskItem();
+            taskList.add(taskItem);
+
+        }
+        for (int i = 201;i<208;i++){
+
+            addPet(i,15);
+        }
+        Counter = random.nextInt()%200+300;
+    }
+    public JSONObject getTaskInfo(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",OP_0.taskInfo);
+        JSONArray tempArray  = new JSONArray();
+        jsonObject.put("Counter",Counter);
+        jsonObject.put("Time",taskBeginTime);
+        for (int i =0;i<taskList.size();i++){
+
+            tempArray.add(JSONObject.fromObject(taskList.get(i)));
+        }
+        jsonObject.put("value", tempArray);
+
+        return jsonObject;
+    }
+    public JSONObject getPetInfo(){
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m",0);
+        jsonObject.put("s",OP_0.petInfo);
+        JSONArray tempArray  = new JSONArray();
+
+        for (TaskItem item : petMap.values()){
+
+            tempArray.add(JSONObject.fromObject(item));
+
+        }
+        jsonObject.put("value", tempArray);
+
+        return jsonObject;
+    }
     public JSONObject getUserInfo(){
         JSONObject jsonObject = new JSONObject();
 

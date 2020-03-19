@@ -104,9 +104,10 @@ public class Vector3 {
         Vector3 v2 = aimPos.clone();
 
 
-        Vector3 vec = v1.add(v2);
+        Vector3 vec = v1.sub(v2);
+
         float dis = vec.square(vec.x)+vec.square(vec.y)+vec.square(vec.z);
-        dis = vec.square(dis);
+        dis = vec.sqrt(dis);
         return dis;
 
 

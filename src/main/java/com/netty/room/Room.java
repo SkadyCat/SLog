@@ -17,16 +17,23 @@ import javax.xml.datatype.Duration;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 
 public class Room {
     private static HashMap<String, PlayerModel> userMap = new HashMap<>();
     private static final int move = 5;
 
+    private static Queue<PlayerModel> rankPVPQueue = new ArrayDeque<>();
+    public static void addPVPQueue(PlayerModel model){
+
+        rankPVPQueue.offer(model);
+        if (rankPVPQueue.size()>=2){
+
+            PVPRoom.confirmPVPRoom(rankPVPQueue.poll(),rankPVPQueue.poll());
+
+        }
+    }
     private static final int playerEnter = 10;
     public  static  void
      updatePosition(){

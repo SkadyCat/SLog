@@ -71,6 +71,8 @@ public class STimer extends TimerTask implements IOBViewer {
         sendInfo.offer(info);
     }
     int upTime = 0;
+
+
     @Override
     public void run() {
 
@@ -98,8 +100,10 @@ public class STimer extends TimerTask implements IOBViewer {
 
                 //System.out.println("广播消息");
             }
-
-
+            ViewInfo timerViewerInfo = new ViewInfo();
+            timerViewerInfo.code = 0;
+            timerViewerInfo.subCode = 200;
+            broadCast(timerViewerInfo);
         }catch (Exception e){
 
             System.out.println("捕获到异常");
@@ -119,17 +123,22 @@ public class STimer extends TimerTask implements IOBViewer {
     private static List<IViewer> iViewerList = new ArrayList<>();
     @Override
     public void broadCast(ViewInfo info) {
-        for (IViewer viewer:iViewerList
+        for (int i =0;i<iViewerList.size();i++
              ) {
 
-            viewer.update(info);
+            iViewerList.get(i).update(info);
 
         }
     }
 
     @Override
     public void addViewer(IViewer viewer) {
-        iViewerList.add(viewer);
+
+        if (!iViewerList.contains(viewer)){
+            iViewerList.add(viewer);
+
+        }
+
     }
 
     @Override

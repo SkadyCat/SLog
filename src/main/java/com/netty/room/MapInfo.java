@@ -109,7 +109,9 @@ public class MapInfo implements IViewer {
 
 
 
-        MonsterResInfo.monsterModels.get(index).position.add(new Vector3(100,0,100));
+        MonsterModel monsterModel =  MonsterResInfo.monsterModels.get(index);
+        monsterModel.onDead();
+        monsterModel.position.add(new Vector3().random().mul(20));
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("m",0);
         jsonObject.put("s",8);
@@ -146,12 +148,12 @@ public class MapInfo implements IViewer {
 
     }
 
-    public static void deHp(int monsterID,int hp){
+    public static MonsterModel deHp(int monsterID,int hp){
         MonsterModel info =  MonsterResInfo.monsterModels.get(monsterID);
         if (info == null){
 
             System.out.println("monster为空！"+monsterID);
-            return;
+            return null;
         }
 
         boolean deadStatu = info.statuInfo.dehp(hp);
@@ -165,6 +167,7 @@ public class MapInfo implements IViewer {
 
         }
 
+        return info;
     }
     public static JSONObject getMonsterStatuInfo(JSONObject jv){
         JSONObject jsonObject = new JSONObject();

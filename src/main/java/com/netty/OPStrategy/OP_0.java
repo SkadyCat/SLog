@@ -7,24 +7,29 @@ import com.netty.role.Role;
 import com.netty.role.RoleMap;
 import com.netty.role.STimer;
 import com.netty.room.MapInfo;
+import com.netty.room.PVPRoom;
 import com.netty.room.Room;
 import com.netty.room.farminfo.FarmInfoFactory;
+import com.netty.room.map.MonsterModel;
 import com.netty.room.map.MonsterResInfo;
 import com.netty.room.map.StaticItem;
 import com.netty.room.map.StaticResInfo;
 import com.netty.server.DataModel;
+import com.netty.server.udpserver.UDPHandler;
+import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import jdk.nashorn.internal.runtime.Debug;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
 
 public class OP_0  extends SLogStrategy{
     public static  PlayerModel playerModel;
-
+    public static PVPRoom roomModel;
     /**
      * 更新怪物血条值
      */
@@ -45,9 +50,30 @@ public class OP_0  extends SLogStrategy{
     public static final int shopCorp = 45;
     public static final int cropRipe = 50;
     public static final int stealCrop = 51;
+
+    //仇恨操作
+    public static final int hosOP = 71;
+    //怪物攻击
+    public static final int monsterAtk = 72;
+    public static final int recoverHosAim = 72;
+    //初始化poke的数量
+    public static final int petInfo = 74;
+    public static final int taskInfo = 75;
+    public static final int addNewPet = 76;
+    public static final int counterTask = 77;
+    public static final int usePokeBall = 78;
+    public static final int addPokeBall = 79;
+    public static final int initPokeBall = 80;
+    public static final int initRealWorld = 81;
     JSONObject jsonObject;
+    public static final int confirmPVPRoom = 300;
+    public static final int initPVPRoom = 301;
 
-
+    public static final int roundEnd = 302;
+    public static final int createPoke = 303;
+    public static final int pokeAtk = 304;
+    public static final int directAtk = 305;
+    public static final int pvpEnd = 311;
     @Override
     public void subOP(int _subCode) {
         switch (_subCode){
@@ -65,16 +91,12 @@ public class OP_0  extends SLogStrategy{
                 Room.singleSend(sender,MonsterResInfo.getInitInfo().toString().getBytes());
                 Room.singleSend(sender,playerModel.getBagInfo());
                 Room.singleSend(sender,playerModel.getUserStatuInfo());
+                Room.singleSend(sender,playerModel.getPetInfo());
+                Room.singleSend(sender,playerModel.getTaskInfo());
+
                 break;
             case 1:
 
-                //System.out.println(data.originData);
-
-            //  MoveModel model1 = (MoveModel) JSONObject.toBean(data.originData,MoveModel.class);
-            //  //
-            //  Room.getUserModel(model1.getUserAcc()).setDir(model1.getX(),model1.getY(),model1.getZ());
-
-//                Room.getUserModel(model1.getUserAcc()).updatePosition();
                 break;
             case 2:
 
@@ -113,9 +135,18 @@ public class OP_0  extends SLogStrategy{
             case updateMonsterHp:
                  int monsterId =  new Integer(data.originData.getString("index"));
                  int deHpValue = data.originData.getInt("value");
-
+                int pIndex = data.originData.getInt("pIndex");
                  System.out.println(data.originData.toString());
-                 MapInfo.deHp(monsterId,deHpValue);
+                 MonsterModel msm = MapInfo.deHp(monsterId,deHpValue);
+                 if (msm.liveStatu ==0){
+                     if (msm!= null){
+
+                         msm.setHosPlayer(pIndex);
+
+                     }
+                     STimer.Instance.addViewer(msm);
+                     Room.BroadCast(msm.getHosAim().toString().getBytes());
+                 }
 
                 break;
 
@@ -200,13 +231,87 @@ public class OP_0  extends SLogStrategy{
                 int changeNum = playerModel.changeItemNum(cropID,0,cropType,staticIndex);
 
                 if (cropType == 1){
-
                     StaticResInfo.deleteStaticItem(staticIndex,changeNum);
-
                 }
 
                 break;
 
+            case 61:
+                System.out.println("重新输出怪物");
+                Room.singleSend(sender,MonsterResInfo.getInitInfo().toString().getBytes());
+                break;
+            case addNewPet:
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+                int petID = new Integer(data.originData.getString("id"));
+                jsonObject = playerModel.addPet(petID);
+                Room.singleSend(sender,jsonObject.toString().getBytes());
+
+
+                break;
+
+            case counterTask:
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+                Room.singleSend(sender,playerModel.counterTask());
+                break;
+
+            case 78:
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+
+               Room.singleSend( sender,playerModel.usePokeBall().toString().getBytes());
+                break;
+
+            case addPokeBall:
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+                playerModel.tscore -=2;
+                playerModel.pokeBallNum+=1;
+                Room.singleSend( sender,playerModel.getPokeBallNum().toString().getBytes());
+                break;
+
+            case initRealWorld:
+                Room.singleSend( sender,playerModel.getPokeBallNum().toString().getBytes());
+                Room.singleSend( sender,playerModel.getUserStatuInfo());
+                break;
+
+
+            case initPVPRoom:
+                playerModel = Room.playerModelList.get(new Integer(data.originData.getString("index")));
+                Room.addPVPQueue(playerModel);
+
+                break;
+
+            case roundEnd:
+
+                roomModel = PVPRoom.getRoom(new Integer(data.originData.getString("room")));
+                roomModel.rondEnd();
+
+                break;
+            case  createPoke:
+                roomModel = PVPRoom.getRoom(new Integer(data.originData.getString("room")));
+                roomModel.broadCast(data.originData);
+
+                break;
+
+            case pokeAtk:
+                roomModel = PVPRoom.getRoom(new Integer(data.originData.getString("room")));
+                roomModel.broadCast(data.originData);
+                break;
+            case confirmPVPRoom:
+                roomModel = PVPRoom.getRoom(new Integer(data.originData.getString("room")));
+                roomModel.counter++;
+
+                break;
+
+            case directAtk:
+                roomModel = PVPRoom.getRoom(new Integer(data.originData.getString("room")));
+                roomModel.broadCast(data.originData);
+                break;
+
+
+            case pvpEnd:
+                roomModel = PVPRoom.getRoom(new Integer(data.originData.getString("room")));
+
+                roomModel.broadCast(data.originData);
+                break;
             case 99:
 
                // Room.removePlayer(data.originData.getString("user_acc"));

@@ -1,17 +1,44 @@
 package com.netty.room.map;
 
+import com.netty.Model.HosModel;
+import com.netty.Model.MonsterAtkModel;
+import com.netty.Model.PlayerModel;
+import com.netty.OPStrategy.OP_0;
 import com.netty.common.Vector3;
+import com.netty.role.STimer;
+import com.netty.room.Room;
+import com.netty.view.IViewer;
+import com.netty.view.ViewInfo;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
-public class MonsterModel extends MapBaseInfo {
+import java.util.Date;
+
+public class MonsterModel extends MapBaseInfo implements  IViewer {
     public String monsterID;
     public Vector3 position;
     public Vector3 dir;
     public StatuInfo statuInfo;
     public int type;
     public int index;
+    private int hosPlayer;
+    //100死亡，0，存活
+    public int liveStatu;
+    public Date deadTime;
+    public int getHosPlayer() {
+        return hosPlayer;
+    }
+
+    public void setHosPlayer(int hosPlayer) {
+
+        if (this.hosPlayer== -1){
+            this.hosPlayer = hosPlayer;
+
+        }
+
+    }
+
     public static byte[] float2byte(float f) {
 
         // 把float转换为byte[]
@@ -22,24 +49,27 @@ public class MonsterModel extends MapBaseInfo {
             b[i] = (byte) (fbit >> ( i * 8));
         }
 
-        //// 翻转数组
-        //int len = b.length;
-        //// 建立一个与源数组元素类型相同的数组
-        //byte[] dest = new byte[len];
-        //// 为了防止修改源数组，将源数组拷贝一份副本
-        //System.arraycopy(b, 0, dest, 0, len);
-        //byte temp;
-        //// 将顺位第i个与倒数第i个交换
-        //for (int i = 0; i < len / 2; ++i) {
-        //    temp = dest[i];
-        //    dest[i] = dest[len - i - 1];
-        //    dest[len - i - 1] = temp;
-        //}
 
         return b;
 
     }
 
+    /**
+     *
+     * @return 返回仇恨对象
+     */
+    public JSONObject getHosAim(){
+
+        HosModel hosModel = new HosModel(this.index,this.hosPlayer,0,OP_0.hosOP);
+
+        return JSONObject.fromObject(hosModel);
+
+    }
+
+    public JSONObject recoverHosAim(){
+        HosModel hosModel = new HosModel(this.index,this.hosPlayer,0,OP_0.recoverHosAim);
+        return JSONObject.fromObject(hosModel);
+    }
     public JSONObject getStatuInfo(){
 
         JSONObject jsonObject = new JSONObject();
@@ -59,6 +89,16 @@ public class MonsterModel extends MapBaseInfo {
         return jsonObject;
 
     }
+    public void  onDead(){
+
+        System.out.println("怪物死亡"+this.hosPlayer);
+        STimer.Instance.removeViewer(this);
+        this.hosPlayer = -1;
+        deadTime = new Date();
+        liveStatu = 100;
+    }
+
+
     public byte[] getPosition(){
 
         byte[] byteList = new byte[8];
@@ -77,6 +117,14 @@ public class MonsterModel extends MapBaseInfo {
         return byteList;
 
 
+    }
+    public JSONObject getMonsterAtkModel(){
+        MonsterAtkModel ATK = new MonsterAtkModel();
+        ATK.m = 0;
+        ATK.s = OP_0.monsterAtk;
+        ATK.pIndex = hosPlayer;
+        ATK.mIndex = this.index;
+        return JSONObject.fromObject(ATK);
     }
     public MonsterModel(){
 
@@ -172,6 +220,8 @@ public class MonsterModel extends MapBaseInfo {
         this.position.random();
         this.position.normal();
         this.position.mul(50);
+        this.liveStatu = 0;
+
     }
 
     @Override
@@ -190,7 +240,37 @@ public class MonsterModel extends MapBaseInfo {
         return  jsonObject;
     }
 
+    int atkFrequce;
+    @Override
+    public void update(ViewInfo info) {
+        if (this.hosPlayer== -1){
+
+            STimer.Instance.removeViewer(this);
+            return;
+        }
+        if (this.liveStatu == 100){
+            STimer.Instance.removeViewer(this);
+        }
 
 
+        PlayerModel plm = Room.playerModelList.get(hosPlayer);
+        if (Vector3.Distance(this.position,plm.getPosition())>22){
+            this.hosPlayer = -1;
+            STimer.Instance.removeViewer(this);
 
+            Room.BroadCast(recoverHosAim().toString().getBytes());
+        }
+        if (info.subCode == 200){
+            atkFrequce+= 1;
+
+            if (atkFrequce>100){
+
+                atkFrequce = 0;
+                Room.BroadCast(getMonsterAtkModel().toString().getBytes());
+            }
+
+        }
+
+
+    }
 }

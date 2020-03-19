@@ -22,4 +22,6 @@ public class SendData extends Model {
     public void setM(int m) {
         this.m = m;
     }
+
+
 }
